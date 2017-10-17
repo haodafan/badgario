@@ -1,11 +1,11 @@
 # CONFIGURATION PYTHON FILE
 
 # GENERAL SETTINGS
-MAPSIZE_X = 1600
-MAPSIZE_Y = 1200
+#MAPSIZE_X = 1600
+#MAPSIZE_Y = 1200
 
-SCREENSIZE_X = 800
-SCREENSIZE_Y = 600
+SCREENSIZE_X = 1366
+SCREENSIZE_Y = 768
 HALF_SCREENSIZE_X = int(SCREENSIZE_X/2)
 HALF_SCREENSIZE_Y = int(SCREENSIZE_Y/2)
 
@@ -17,31 +17,48 @@ CAMERASLACK = 90
 NAME = 'Player'
 MOVERATE = 8
 
-STARTSIZE = 50
+STARTSIZE = 25
 EATSIZE = STARTSIZE - 15
-WINSIZE = 300
+WINSIZE = 200
 
-GAMEOVERTIME = 4
+GAMEOVERTIME = 4000
 
 NUMENEMIES = 30
 ENEMYMINSIZE = 10
 MINSPEED = 1
 MAXSPEED = 4
-DIRCHANGEFREQ = 2 # % chance of direction change per frame
+DIRCHANGEFREQ = 3 # % chance of direction change per frame
+
+ENGULF_THRESHOLD_MULTIPLIER = 1.3 #You have to be this much times bigger to engulf
+ENGULF_THRESHOLD_CONSTANT = 20 #You have to be this many sizes bigger to engulf
+
+ENGULF_EFFICIENCY = 0.8 #How much size you gain from engulfing the other object
+
+#BOSS SETTINGS
+BOSS_SIZE = 170
+BOSS_SPEED = 4
+
+BOSS_START_X = SCREENSIZE_X
+BOSS_START_Y = SCREENSIZE_Y
+
+BOSS_DIR = "data/active/active.png"
 
 # CONSTANTS
 LEFT = 'left'
 RIGHT = 'right'
 
 # COLOUR CONSTANTS
-WHITE = (255, 255, 255)
-BLACK = (  0,   0,   0)
+WHITE  = (255, 255, 255)
+BLACK  = (  0,   0,   0)
+GRAY   = ( 64,  64,  64)
 
-RED   = (255,   0,   0)
-GREEN = (  0, 255,   0)
-BLUE  = (  0,   0, 255)
+RED    = (255,   0,   0)
+GREEN  = (  0, 255,   0)
+BLUE   = (  0,   0, 255)
+YELLOW = (255, 255,   0)
+PURPLE = (128,   0, 128)
 
-BALLCOLOUR = [RED, GREEN, BLUE]
+BALLCOLOUR = [RED, GREEN, BLUE, YELLOW, PURPLE]
 
 
 

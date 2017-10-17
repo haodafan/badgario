@@ -1,0 +1,6 @@
+#################################
+October 17th 2017
+Release: 0.0.1
+
+Game is playable, there are win and lose conditions.
+
