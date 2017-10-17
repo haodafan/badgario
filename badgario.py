@@ -1,6 +1,6 @@
 #@Author: Haoda Fan
 #Development start: October 16th 2017
-#Current Build: October 16th 2017
+#Current Build: October 17th 2017
 
 # ---------------------------------------------------
 # LIBRARIES
@@ -48,7 +48,7 @@ def runGame():
     gameWonRect = gameWonSurf.get_rect()
     gameWonRect.center = (HALF_SCREENSIZE_X, HALF_SCREENSIZE_Y)
 
-    gameWonSurf2 = BASICFONT.render('(press "r" to restart)')
+    gameWonSurf2 = BASICFONT.render('(press "r" to restart)', True, WHITE)
     gameWonRect2 = gameWonSurf2.get_rect()
     gameWonRect2.center = (HALF_SCREENSIZE_X, HALF_SCREENSIZE_Y)
 
@@ -56,12 +56,13 @@ def runGame():
     cameraX = 0
     cameraY = 0
 
-    objOtherBalls = []
+    objOtherBalls = [] #Stores all balls used in game
     objBossBall = [] #Potentially used later
 
-    objPlayer = {'name': NAME
-                 'size': STARTSIZE
-                 'x' : HALF_SCREENSIZE_X
+    objPlayer = {'name': NAME,
+                 'size': STARTSIZE,
+                 'color' : BLACK,
+                 'x' : HALF_SCREENSIZE_X,
                  'y' : HALF_SCREENSIZE_Y}
     moveLeft = False
     moveRight = False
@@ -96,47 +97,31 @@ def runGame():
             objOtherBalls.append(makeNewBall(cameraX, cameraY))
             
         ## Moving the camera ##
-        playerCenterX = objPlayer['x'] #Note this is different from tutorial, since we're using balls
-        playerCenterY = objPlayer['y']
         # Right-Left
-        if (cameraX + HALF_SCREENSIZE_X) - playerCenterX > CAMERASLACK):
-            cameraX = playerCenterX + CAMERASLACK - HALF_SCREENSIZE_X
-        elif playerCenterX - (cameraX + HALF_SCREENSIZE_X) > CAMERASLACK):
-            cameraX = playerCenterX - CAMERASLACK - HALF_SCREENSIZE_X
+        if (cameraX + HALF_SCREENSIZE_X) - objPlayer['x'] > CAMERASLACK:
+            cameraX = objPlayer['x'] + CAMERASLACK - HALF_SCREENSIZE_X
+        elif objPlayer['x'] - (cameraX + HALF_SCREENSIZE_X) > CAMERASLACK:
+            cameraX = objPlayer['x'] - CAMERASLACK - HALF_SCREENSIZE_X
         # Down-Up
-        if (cameraY + HALF_SCREENSIZE_Y) - playerCenterY > CAMERASLACK):
-            cameraY = playerCenterY + CAMERASLACK - HALF_SCREENSIZE_Y
-        elif playerCenterX - (cameraY + HALF_SCREENSIZE_Y) > CAMERASLACK):
-            cameraY = playerCenterY - CAMERASLACK - HALF_SCREENSIZE_Y
+        if (cameraY + HALF_SCREENSIZE_Y) - objPlayer['y'] > CAMERASLACK:
+            cameraY = objPlayer['y'] + CAMERASLACK - HALF_SCREENSIZE_Y
+        elif objPlayer['y'] - (cameraY + HALF_SCREENSIZE_Y) > CAMERASLACK:
+            cameraY = objPlayer['y'] - CAMERASLACK - HALF_SCREENSIZE_Y
+        #DEBUGGING
+        print("CAMERA POSITION: " + str(cameraX) + ", " + str(cameraY))
 
         ## Draw Enemy Balls ##
         for objBall in objOtherBalls:
 
-            """
-            # BALL CREATION
-            #Random color
-            chooser = random.randint(0, len(BALLCOLOUR) - 1)
-            #Random Size
-            MaxSize = STARTSIZE + 25
-            if MaxSize > WINSIZE - 50:
-                MaxSize = WINSIZE - 50
-            size = random.randint(ENEMYMINSIZE, MaxSize)
-
-            ## UNFINISHED!!!!! ##
-            objBall['circle'] = pygame.circle(SURF, BALLCOLOUR[chooser], size, 0)
-            """
-
-            objBall['circle'] = pygame.circle((objBall['x'] - cameraX,
-                                               objBall['y'] - cameraY),
-                                              obJBall['size'])
-            pygame.draw.objBall['circle']
+            pygame.draw.circle(SURF, objBall['color'],
+                               (objBall['x'] - cameraX, objBall['y'] - cameraY),
+                               objBall['size'], 0)
 
         ## Draw Player Ball ##
-        if not gameOverMode:
-            objPlayer['circle'] = pygame.circle((objPlayer['x'] - cameraX,
-                                                 objPlayer['y'] - cameraY),
-                                                objPlayer['size'], 0)
-            pygame.draw.objBall['circle']
+        if not gameOver:
+            pygame.draw.circle(SURF, objPlayer['color'],
+                               (objPlayer['x'] - cameraX, objPlayer['y'] - cameraY),
+                               objPlayer['size'], 0)
                                                 
         ## EVENT HANDLING LOOP ##
         for event in pygame.event.get():
@@ -168,38 +153,38 @@ def runGame():
                     moveLeft = False
                 elif event.key in (K_RIGHT, K_d):
                     moveRight = False
-            elif event.key == K_ESCAPE:
-                terminate()
+                elif event.key == K_ESCAPE:
+                    terminate()
 
-            # Moving the Player
-            if not gameOverMode:
-                #actually move the player
-                if moveLeft:
-                    objPlayer['x'] -= MOVERATE
-                if moveRight:
-                    objPlayer['x'] += MOVERATE
-                if moveUp:
-                    objPlayer['y'] -= MOVERATE
-                if moveDown:
-                    objPlayer['y'] += MOVERATE
+        # Moving the Player
+        if not gameOver:
+            #actually move the player
+            if moveLeft:
+                objPlayer['x'] -= MOVERATE
+            if moveRight:
+                objPlayer['x'] += MOVERATE
+            if moveUp:
+                objPlayer['y'] -= MOVERATE
+            if moveDown:
+                objPlayer['y'] += MOVERATE
 
-                #Collision Detection
+            #Collision Detection
 
-                ### FUCKIT IL DO THAT LATER
+            ### FUCKIT IL DO THAT LATER
 
-            else:
-                #Game is over. Show "gameover" text
-                SURF.blit(gameOverSurf, gameOverRect)
-                #displays it for GAMEOVERTIME seconds...
-                if time.time() - gameOverStartTime > GAMEOVERTIME:
-                    return #End the current game
+        else:
+            #Game is over. Show "gameover" text
+            SURF.blit(gameOverSurf, gameOverRect)
+            #displays it for GAMEOVERTIME seconds...
+            if time.time() - gameOverStartTime > GAMEOVERTIME:
+                return #End the current game
 
-            if winMode:
-                SURF.blit(winSurf, winRect)
-                SURF.blit(winSurf2, winRect2)
+        if gameWon:
+            SURF.blit(winSurf, winRect)
+            SURF.blit(winSurf2, winRect2)
 
-            pygame.display.update()
-            FPSCLOCK.tick()
+        pygame.display.update()
+        FPSCLOCK.tick(FPS)
         
 # ---------------------------------------------------
 # HELPER FUNCTIONS
@@ -211,7 +196,6 @@ def terminate():
     sys.exit()
 
 
-
 # GET RANDOM VELOCITY
 # This function returns a value between MINSPEED and MAXSPEED (from the config file)
 def getRandomVelocity():
@@ -220,20 +204,62 @@ def getRandomVelocity():
     else:
         return - random.randint(MINSPEED, MAXSPEED)
 
-def getRandomOffCameraPos(cameraX, camerY, objRadius):
+#Finding an off-camera spawn location
+def getRandomOffCameraPos(cameraX, cameraY, objRadius):
     #create a rect view of the camera view
     cameraRect = pygame.Rect(cameraX, cameraY, SCREENSIZE_X, SCREENSIZE_Y)
     while True:
+        #DEBUGGING
+        #print("Calculation: ")
+        #print("random.randint(" + str(cameraX) + "-" + str(SCREENSIZE_X) + ", " + str(cameraX) + " + (2 * " + str(SCREENSIZE_X) + ")")
+        #print("random.randint(" + str(cameraY) + "-" + str(SCREENSIZE_Y) + ", " + str(cameraY) + " + (2 * " + str(SCREENSIZE_Y) + ")")
         x = random.randint(cameraX - SCREENSIZE_X, cameraX + (2 * SCREENSIZE_X))
-        y = random.randint(cameraX - SCREENSIZE_Y, cameraY + (2 * SCREENSIZE_Y))
+        y = random.randint(cameraY - SCREENSIZE_Y, cameraY + (2 * SCREENSIZE_Y))
 
         #create a rect object with the random coordinates and use collidirect()???
 
         # to make sure the right edge isn't in the camera view...
-        objRect = pygame.colliderect(cameraRect):
+        objRect = pygame.Rect(x, y, objRadius * 2, objRadius * 2)
+        if not objRect.colliderect(cameraRect):
             return x, y
         
 
 #MAKE NEW BALLS
 def makeNewBall(cameraX, cameraY):
     #Your code here
+    ball = {}
+    
+    # BALL CREATION
+    #Random color
+    chooser = random.randint(0, len(BALLCOLOUR) - 1)
+    colour = BALLCOLOUR[chooser]
+    
+    #Random Size
+    MaxSize = STARTSIZE + 25
+    if MaxSize > WINSIZE - 50:
+        MaxSize = WINSIZE - 50
+    size = random.randint(ENEMYMINSIZE, MaxSize)
+
+    ball['size'] = size
+    ball['color'] = colour
+    ball['x'], ball['y'] = getRandomOffCameraPos(cameraX, cameraY, size)
+    ball['movex'] = getRandomVelocity()
+    ball['movey'] = getRandomVelocity()
+
+    #Debugging
+    print("Ball created! Size:" + str(ball['size']) + " Colour: " + str(ball['color']))
+
+    return ball
+
+#Checking if outside the Active Map
+def isOutsideActiveArea(cameraX, cameraY, obj):
+    #Returns False if cameraX and cameraY are more than a half-window length beyond the edge of the window
+    boundsLeftEdge = cameraX - SCREENSIZE_X
+    boundsTopEdge = cameraY - SCREENSIZE_Y
+    boundsRect = pygame.Rect(boundsLeftEdge, boundsTopEdge, SCREENSIZE_X * 3, SCREENSIZE_Y * 3)
+    objRect = pygame.Rect(obj['x'], obj['y'], obj['size'] * 2, obj['size'] * 2)
+    return not boundsRect.colliderect(objRect)
+
+if __name__ == '__main__':
+    main()
+

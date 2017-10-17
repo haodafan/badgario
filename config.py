@@ -15,7 +15,7 @@ CAMERASLACK = 90
 
 # GAME SETTINGS
 NAME = 'Player'
-MOVERATE = 10
+MOVERATE = 8
 
 STARTSIZE = 50
 EATSIZE = STARTSIZE - 15
@@ -25,9 +25,9 @@ GAMEOVERTIME = 4
 
 NUMENEMIES = 30
 ENEMYMINSIZE = 10
-MINSPEED = 3
-MAXSPEED = 8
-DIRCHANGEFREQ = 3 # % chance of direction change per frame
+MINSPEED = 1
+MAXSPEED = 4
+DIRCHANGEFREQ = 2 # % chance of direction change per frame
 
 # CONSTANTS
 LEFT = 'left'
