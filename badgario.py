@@ -26,7 +26,7 @@ def main():
     BASICFONT = pygame.font.Font('freesansbold.ttf', 32)
 
     global BOSS_IMG
-    BOSS_IMG = pygame.image.load('active.png')
+    BOSS_IMG = pygame.image.load(BOSS_DIR)
     #
 
     while True:
@@ -85,6 +85,9 @@ def runGame():
     moveRight = False
     moveUp = False
     moveDown = False
+
+    #Turnaround
+    turnAround = False
     
     #################
     ### GAME LOOP ###
@@ -150,14 +153,28 @@ def runGame():
             SURF.blit(playerNameSurf, playerNameRect)
 
         ## Draw Boss Ball ##
-        if not gameOver and not objBoss['isEaten']:
+        if not objBoss['isEaten']:
             objBoss['rect'] = pygame.Rect( (objBoss['x'] - cameraX, objBoss['y'] - cameraY,
                                            objBoss['size'] * 2, objBoss['size'] * 2))
             SURF.blit(objBoss['surface'], objBoss['rect'])
 
         ## Moving the Boss ##
-        
-        
+        boss_move_X = 0
+        boss_move_Y = 0
+        if isOutsideActiveArea(cameraX, cameraY, objBoss) and not turnAround:
+            #The boss needs to catch up 
+            boss_move_X, boss_move_Y = bossCatchup(objBoss, objPlayer)
+        elif turnAround:
+            #Now the boss runs away from you!
+            boss_move_X, boss_move_Y = bossAI(objBoss, objPlayer)
+            boss_move_x = - boss_move_X
+            boss_move_y = - boss_move_Y
+        else:
+            #Boss moves at normal speed
+            boss_move_X, boss_move_Y = bossAI(objBoss, objPlayer)
+        #Moving it
+        objBoss['x'] += boss_move_X
+        objBoss['y'] += boss_move_Y
                                                 
         ## EVENT HANDLING LOOP ##
         for event in pygame.event.get():
@@ -217,21 +234,27 @@ def runGame():
                     objPlayer['size'] = doEngulf(objPlayer, objBall)
                     del objOtherBalls[i] # The other ball was eaten
                     print("OM NOM NOM")
+                    if not turnAround and objPlayer['size'] > 200:
+                        turnAround = True
+                        ### PLAY A NEAT SOUND HERE ###
                     
                 elif (canEngulf(objBall, objPlayer)):
                     #You have been engulfed by another ball! YOU LOSE! 
                     #del objPlayer
                     gameOver = True
+                    gameOverStartTime = time.time()
                     print("OH NOOOO")
 
                 if (objPlayer['size'] > WINSIZE):
                     #You are over the victory threshold. For now, this will mean victory.
                     gameWon = True
+
+            #Separate mechanic for collision with Boss
+            ## IN DEVELOPMENT ##
                     
         else:
             #Game is over. Show "gameover" text
             SURF.blit(gameOverSurf, gameOverRect)
-            time.sleep(5000) # <- At least this works lmao
             #displays it for GAMEOVERTIME seconds... (note: does not work lol) 
             if time.time() - gameOverStartTime > GAMEOVERTIME:
                 return #End the current game
@@ -317,6 +340,13 @@ def isOutsideActiveArea(cameraX, cameraY, obj):
     objRect = pygame.Rect(obj['x'], obj['y'], obj['size'] * 2, obj['size'] * 2)
     return not boundsRect.colliderect(objRect)
 
+#Check if outside cameraview
+def isOutsideCamera(cameraX, cameraY, obj):
+    #Returns false if cameraX and cameraY are beyond the edge of the window
+    boundsRect = pygame.Rect(cameraX, cameraY, SCREENSIZE_X, SCREENSIZE_Y)
+    objRect = pygame.Rect(obj['x'], obj['y'], obj['size'] * 2, obj['size'] * 2)
+    return not boundsRect.colliderect(objRect)
+
 # canEngulf function
 # canEngulf(objectA, objectB)
 # This function returns False if object A can eat object B, False otherwise
@@ -374,40 +404,58 @@ def doEngulf(objA, objB):
 # Boss_AI determines the direction that the boss will go
 # It returns two integers, x, y
 def bossAI(objBoss, objPlayer):
+    bossCenterX = objBoss['x'] + objBoss['size']
+    bossCenterY = objBoss['y'] + objBoss['size']
+    
     # The Difference represents how far the Boss needs to go in order to reach the player
-    diff_X = objBoss['x'] - objPlayer['x']
-    diff_Y = objBoss['y'] - objPlayer['y'] 
-    proportion = diff_X / diff_Y
+    diff_X = bossCenterX - objPlayer['x']
+    diff_Y = bossCenterY - objPlayer['y']
+
+    #First let's handle the 0 cases
+    if (diff_X == 0 or diff_Y == 0):
+        proportion = 0
+    else:
+        proportion = diff_X / diff_Y
     
     # Case 1: Diagonal down-right
     # The Boss only goes down-right if the proportion of the differences X/Y are between 1/2 and 2/1, X negative
     if (proportion > 0.5 and proportion < 2 and diff_X < 0):
-        return - BOSS_SPEED, -BOSS_SPEED
+        return BOSS_SPEED, BOSS_SPEED
     # Case 2: Diagonal up-left
     # The Boss only goes up-left if the proportion of the differences X/Y are between 1/2 and 2/1, X positive    
     elif (proportion > 0.5 and proportion < 2 and diff_X > 0):
-        return BOSS_SPEED, BOSS_SPEED
+        return - BOSS_SPEED, - BOSS_SPEED
 
     # Case 3: Diagonal up-right
     # The boss only goes up-right if proportion of the differences X/Y are between -1/2 and -2/1, X negative
     elif (proportion < -0.5 and proportion > -2 and diff_X < 0):
-        return - BOSS_SPEED, BOSS_SPEED 
+        return BOSS_SPEED, - BOSS_SPEED 
     # Case 4: Diagonal down-left
     # The boss only goes up-right if proportion of the differences X/Y are between -1/2 and -2/1, X positive
     elif (proportion < -0.5 and proportion > -2 and diff_X < 0):
-        return BOSS_SPEED, - BOSS_SPEED 
+        return - BOSS_SPEED, BOSS_SPEED 
 
     # Cases 5-8: straight directions
-    elif (diff_X > 0):
-        return BOSS_SPEED, 0
-    elif (diff_X < 0):
+    elif (diff_X > 0 and diff_X > diff_Y):
         return - BOSS_SPEED, 0
-    elif (diff_Y > 0):
-        return 0, BOSS_SPEED
-    elif(diff_Y < 0):
+    elif (diff_X < 0 and diff_X < diff_Y):
+        return BOSS_SPEED, 0
+    elif (diff_Y > 0 and diff_Y > diff_X):
         return 0, - BOSS_SPEED
+    elif(diff_Y < 0 and diff_Y < diff_X):
+        return 0, BOSS_SPEED
     else:
         return 0,0
+
+#Method used to speed up the boss's movement based on the returned values of bossAI()
+def bossCatchup(objBoss, objPlayer):
+    print("Boss is tryna catch up!")
+    x, y = bossAI(objBoss, objPlayer)
+    diff_prop = MOVERATE / BOSS_SPEED
+    catchup_multiplier = diff_prop * 2
+    new_x = x * catchup_multiplier
+    new_y = y * catchup_multiplier
+    return new_x, new_y
     
 
 if __name__ == '__main__':

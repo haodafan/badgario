@@ -21,7 +21,7 @@ STARTSIZE = 25
 EATSIZE = STARTSIZE - 15
 WINSIZE = 200
 
-GAMEOVERTIME = 4000
+GAMEOVERTIME = 4
 
 NUMENEMIES = 30
 ENEMYMINSIZE = 10
@@ -32,7 +32,7 @@ DIRCHANGEFREQ = 3 # % chance of direction change per frame
 ENGULF_THRESHOLD_MULTIPLIER = 1.3 #You have to be this much times bigger to engulf
 ENGULF_THRESHOLD_CONSTANT = 20 #You have to be this many sizes bigger to engulf
 
-ENGULF_EFFICIENCY = 0.8 #How much size you gain from engulfing the other object
+ENGULF_EFFICIENCY = 0.6 #How much size you gain from engulfing the other object
 
 #BOSS SETTINGS
 BOSS_SIZE = 170
@@ -41,7 +41,8 @@ BOSS_SPEED = 4
 BOSS_START_X = SCREENSIZE_X
 BOSS_START_Y = SCREENSIZE_Y
 
-BOSS_DIR = "data/active/active.png"
+#CUSTOMIZED BOSS
+BOSS_DIR = "data/active/img.png"
 
 # CONSTANTS
 LEFT = 'left'

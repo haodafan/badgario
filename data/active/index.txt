@@ -1,0 +1,5 @@
+img.png : image of boss
+eat.wav : sound of boss eating you
+eaten.wav : sound of boss being eaten by you
+view.wav : sound of boss when he comes into camera view
+ohno.wav : sound of boss during the 'turnaround' 
