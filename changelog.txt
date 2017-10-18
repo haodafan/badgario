@@ -1,0 +1,40 @@
+#################################
+October 17th 2017
+Version: 0.0.1
+
+Game is playable, there are win and lose conditions.
+Camera follows the player around
+There are always a total of 30 balls floating around the active area around your camera
+Balls are deleted if they go too far out, new balls are generated based on the size of your ball
+You can eat other balls, other balls can eat you
+
+#################################
+October 18th 2017
+Version: 0.0.2
+
+A simple boss is added in.
+The boss: 
+- follows you around
+- is slightly slower, but once it's outside the active area, a catchup mechanic prevents him from getting too far from the player
+
+#################################
+October 18th 2017
+Version: 0.0.3 
+
+Boss feature additions: 
+- Boss will run away from you after you reach a certain size
+- Engulfing mechanics with Boss created
+- Boss will detect when it comes into camera view, and when it touches you
+NEW VICTORY CONDITION: You win if you eat the boss!
+
+
+
+
+
+STREEEETCH GOAL
+#################################
+Version 1.0.0
+- Game will be fully playable
+- Boss sounds will play when it detects things
+- Can customize boss using addon program or simple modding 
+- Game is fully configurable and customizable using addon program

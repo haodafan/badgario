@@ -1,6 +1,8 @@
 #@Author: Haoda Fan
 #Development start: October 16th 2017
-#Current Build: October 17th 2017
+#Current Build: October 18th 2017
+
+#Version: 0.0.3
 
 # ---------------------------------------------------
 # LIBRARIES
@@ -42,7 +44,7 @@ def runGame():
     gameWon = False       # If the player has won
 
     #Game text
-    gameOverSurf = BASICFONT.render('YOU LOSE, WHOSE SHITTY NOW?', True, BLACK)
+    gameOverSurf = BASICFONT.render('OM NOM NOM, WHOSE SHITTY NOW?', True, BLACK)
     gameOverRect = gameOverSurf.get_rect()
     gameOverRect.center = (HALF_SCREENSIZE_X, HALF_SCREENSIZE_Y)
 
@@ -88,6 +90,8 @@ def runGame():
 
     #Turnaround
     turnAround = False
+    bossInScreen = True
+    bossInTouch = False
     
     #################
     ### GAME LOOP ###
@@ -162,21 +166,30 @@ def runGame():
         boss_move_X = 0
         boss_move_Y = 0
         if isOutsideActiveArea(cameraX, cameraY, objBoss) and not turnAround:
+            
             #The boss needs to catch up 
             boss_move_X, boss_move_Y = bossCatchup(objBoss, objPlayer)
         elif turnAround:
             #Now the boss runs away from you!
             boss_move_X, boss_move_Y = bossAI(objBoss, objPlayer)
-            boss_move_x = - boss_move_X
-            boss_move_y = - boss_move_Y
+            boss_move_X = - boss_move_X
+            boss_move_Y = - boss_move_Y
+            #Debugging
+            #print("Boss Reverses!!!")
+            
         else:
             #Boss moves at normal speed
             boss_move_X, boss_move_Y = bossAI(objBoss, objPlayer)
+            #Debugging
+            #print("Boss Normal move")
+            
         #Moving it
-        objBoss['x'] += boss_move_X
-        objBoss['y'] += boss_move_Y
-                                                
-        ## EVENT HANDLING LOOP ##
+        if not gameWon:
+            objBoss['x'] += boss_move_X
+            objBoss['y'] += boss_move_Y
+
+                                     
+        ### EVENT HANDLING LOOP ###
         for event in pygame.event.get():
             if event.type == QUIT:
                 terminate()
@@ -209,9 +222,10 @@ def runGame():
                 elif event.key == K_ESCAPE:
                     terminate()
 
-        # Moving the Player
+        ### More Ingame Triggers ###
         if not gameOver:
-            #actually move the player
+            
+            ## Moving the player ##
             if moveLeft:
                 objPlayer['x'] -= MOVERATE
             if moveRight:
@@ -221,7 +235,7 @@ def runGame():
             if moveDown:
                 objPlayer['y'] += MOVERATE
 
-            #Collision Detection
+            ## Collision Detection ##
             for i in range(len(objOtherBalls) - 1, -1, -1):
                 # My collision detection will work a bit differently from the one in the Squirrel game Tutorial.
                 # The squirrel game tutorial, you eat a squirrel when you touch the edge of its rectangle.
@@ -234,8 +248,11 @@ def runGame():
                     objPlayer['size'] = doEngulf(objPlayer, objBall)
                     del objOtherBalls[i] # The other ball was eaten
                     print("OM NOM NOM")
-                    if not turnAround and objPlayer['size'] > 200:
+
+                    #Turnaround point, where you can now eat the boss
+                    if not turnAround and objPlayer['size'] > objBoss['size']:
                         turnAround = True
+                        print("!!TURNAROUND!!")
                         ### PLAY A NEAT SOUND HERE ###
                     
                 elif (canEngulf(objBall, objPlayer)):
@@ -245,12 +262,46 @@ def runGame():
                     gameOverStartTime = time.time()
                     print("OH NOOOO")
 
+                """
+                #Old victory condition
                 if (objPlayer['size'] > WINSIZE):
                     #You are over the victory threshold. For now, this will mean victory.
                     gameWon = True
+                """
 
-            #Separate mechanic for collision with Boss
-            ## IN DEVELOPMENT ##
+            ## Separate mechanic for collision with Boss ##
+            if (bossEngulf(objBoss, objPlayer)) and not gameWon:
+                ### PLAY A NEAT SOUND HERE ###
+                gameOverStartTime = time.time()
+                gameOver = True
+                print("AAAAAAAAAA")
+
+            elif (bossEngulfInverted(objPlayer, objBoss)) and not gameWon:
+                ### PLAY A NEAT SOUND HERE ###
+                objBoss['isEaten'] = True
+                gameWon = True
+
+
+            ## Boss proximity detection and sound triggers ##
+            #  We have the constants: bossInScreen and bossInTouch to keep track of its current state
+                # Note that I have to subtract the boss's size from the camera to compensate for the boss's 'corner' coordinates.
+                # I probably could have coded that better :P 
+            if not bossInScreen and not isOutsideCamera(cameraX - objBoss['size'], cameraY - objBoss['size'], objBoss):
+                print("THE BOSS HAS ENTERED YOUR CAMERA")
+                bossInScreen = True
+                ### PLAY A NEAT SOUND HERE ###
+                
+            elif bossInScreen and isOutsideCamera(cameraX - objBoss['size'], cameraY - objBoss['size'], objBoss):
+                print("THE BOSS HAS LEFT YOUR CAMERA")
+                bossInScreen = False
+
+            if not bossInTouch and bossTouch(objBoss, objPlayer):
+                print("OH NO THE BOSS HAS TOUCHED YOU!!!!!!!!!!!")
+                bossInTouch = True
+                ### PLAY A NEAT SOUND HERE ###
+            elif bossInTouch and not bossTouch(objBoss, objPlayer):
+                print("Phew, he stopped touching you in that weird way. Ew gross")
+                bossInTouch = False
                     
         else:
             #Game is over. Show "gameover" text
@@ -347,6 +398,12 @@ def isOutsideCamera(cameraX, cameraY, obj):
     objRect = pygame.Rect(obj['x'], obj['y'], obj['size'] * 2, obj['size'] * 2)
     return not boundsRect.colliderect(objRect)
 
+#Check if touched
+def bossTouch(objBoss, objA):
+    boundsRectA = pygame.Rect(objA['x'] - objA['size'], objA['y'] - objA['size'], objA['size']*2, objA['size']*2)
+    boundsRectBoss = pygame.Rect(objBoss['x'], objBoss['y'], objBoss['size']*2, objBoss['size']*2)
+    return boundsRectA.colliderect(boundsRectBoss)
+
 # canEngulf function
 # canEngulf(objectA, objectB)
 # This function returns False if object A can eat object B, False otherwise
@@ -372,6 +429,24 @@ def canEngulf(objA, objB):
         else:
             print("Object A cannot engulf object B")
             return False
+
+# bossEngulf function...
+# The boss works slightly differently in that he is a blitted rectangle
+# So his x and y coordinates represent a CORNER instead of a CENTER
+# This method calls the canEngulf function, using an object with the boss's CENTER coordinates
+def bossEngulf(objBoss, objPlayer):
+    objBossCenter = {'x' : objBoss['x'] + objBoss['size'],
+                     'y' : objBoss['y'] + objBoss['size'],
+                     'size' : objBoss['size']}
+    return canEngulf(objBossCenter, objPlayer)
+
+#This works similar to above except with the player engulfing the boss
+def bossEngulfInverted(objPlayer, objBoss):
+    objBossCenter = {'x' : objBoss['x'] + objBoss['size'],
+                     'y' : objBoss['y'] + objBoss['size'],
+                     'size' : objBoss['size']}
+    return canEngulf(objPlayer, objBossCenter)
+                     
 
 # doEngulf function
 # This function will return the new size of object A

@@ -24,19 +24,19 @@ WINSIZE = 200
 GAMEOVERTIME = 4
 
 NUMENEMIES = 30
-ENEMYMINSIZE = 10
+ENEMYMINSIZE = 8
 MINSPEED = 1
 MAXSPEED = 4
 DIRCHANGEFREQ = 3 # % chance of direction change per frame
 
-ENGULF_THRESHOLD_MULTIPLIER = 1.3 #You have to be this much times bigger to engulf
+ENGULF_THRESHOLD_MULTIPLIER = 1.3 #You have to be this much times the size to engulf
 ENGULF_THRESHOLD_CONSTANT = 20 #You have to be this many sizes bigger to engulf
 
 ENGULF_EFFICIENCY = 0.6 #How much size you gain from engulfing the other object
 
 #BOSS SETTINGS
-BOSS_SIZE = 170
-BOSS_SPEED = 4
+BOSS_SIZE = 190
+BOSS_SPEED = 5
 
 BOSS_START_X = SCREENSIZE_X
 BOSS_START_Y = SCREENSIZE_Y
