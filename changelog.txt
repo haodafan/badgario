@@ -27,7 +27,15 @@ Boss feature additions:
 - Boss will detect when it comes into camera view, and when it touches you
 NEW VICTORY CONDITION: You win if you eat the boss!
 
+#################################
+October 18th 2017
+Version: 0.0.4
+Added sound: 
+- Boss will play sounds when it detects coming into camera view, touching player, and the turnaround
+- Boss will play sounds when it eats and is eaten
 
+Minor changes: 
+- Changed img.png to Tanner
 
 
 

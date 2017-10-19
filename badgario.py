@@ -20,6 +20,10 @@ from config import *
 def main():
     global FPSCLOCK, SURF, BASICFONT
 
+    #Initialize sound
+    pygame.mixer.pre_init(44100, 16, 2, 4096) #frequency, size, channels, buffersize
+
+    #Initialize pygame
     pygame.init()
     FPSCLOCK = pygame.time.Clock() #Sets game clock
     pygame.display.set_caption('Shitty Agario')
@@ -65,9 +69,16 @@ def runGame():
     cameraX = 0
     cameraY = 0
 
-    objOtherBalls = [] #Stores all balls used in game
+    #Sound objects
+    viewSound = pygame.mixer.Sound(VIEW_DIR)
+    eatSound = pygame.mixer.Sound(EAT_DIR)
+    eatenSound = pygame.mixer.Sound(EATEN_DIR)
+    ohnoSound = pygame.mixer.Sound(OHNO_DIR)
+    touchSound = pygame.mixer.Sound(TOUCH_DIR)
     
-    #In Development
+
+    objOtherBalls = [] #Stores all balls used in game
+
     objBoss = {'surface' : pygame.transform.scale(BOSS_IMG, (BOSS_SIZE * 2, BOSS_SIZE * 2)),
                'size' : BOSS_SIZE,
                'speed' : BOSS_SPEED,
@@ -253,7 +264,7 @@ def runGame():
                     if not turnAround and objPlayer['size'] > objBoss['size']:
                         turnAround = True
                         print("!!TURNAROUND!!")
-                        ### PLAY A NEAT SOUND HERE ###
+                        pygame.mixer.Sound.play(ohnoSound)
                     
                 elif (canEngulf(objBall, objPlayer)):
                     #You have been engulfed by another ball! YOU LOSE! 
@@ -271,13 +282,13 @@ def runGame():
 
             ## Separate mechanic for collision with Boss ##
             if (bossEngulf(objBoss, objPlayer)) and not gameWon:
-                ### PLAY A NEAT SOUND HERE ###
+                pygame.mixer.Sound.play(eatSound)
                 gameOverStartTime = time.time()
                 gameOver = True
                 print("AAAAAAAAAA")
 
             elif (bossEngulfInverted(objPlayer, objBoss)) and not gameWon:
-                ### PLAY A NEAT SOUND HERE ###
+                pygame.mixer.Sound.play(eatenSound)
                 objBoss['isEaten'] = True
                 gameWon = True
 
@@ -289,7 +300,7 @@ def runGame():
             if not bossInScreen and not isOutsideCamera(cameraX - objBoss['size'], cameraY - objBoss['size'], objBoss):
                 print("THE BOSS HAS ENTERED YOUR CAMERA")
                 bossInScreen = True
-                ### PLAY A NEAT SOUND HERE ###
+                pygame.mixer.Sound.play(viewSound)
                 
             elif bossInScreen and isOutsideCamera(cameraX - objBoss['size'], cameraY - objBoss['size'], objBoss):
                 print("THE BOSS HAS LEFT YOUR CAMERA")
@@ -298,7 +309,7 @@ def runGame():
             if not bossInTouch and bossTouch(objBoss, objPlayer):
                 print("OH NO THE BOSS HAS TOUCHED YOU!!!!!!!!!!!")
                 bossInTouch = True
-                ### PLAY A NEAT SOUND HERE ###
+                pygame.mixer.Sound.play(touchSound)
             elif bossInTouch and not bossTouch(objBoss, objPlayer):
                 print("Phew, he stopped touching you in that weird way. Ew gross")
                 bossInTouch = False

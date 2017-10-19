@@ -43,6 +43,12 @@ BOSS_START_Y = SCREENSIZE_Y
 
 #CUSTOMIZED BOSS
 BOSS_DIR = "data/active/img.png"
+EAT_DIR = "data/active/eat.ogg"
+EATEN_DIR = "data/active/eaten.ogg"
+OHNO_DIR = "data/active/ohno.ogg"
+VIEW_DIR = "data/active/view.ogg"
+TOUCH_DIR = "data/active/touch.ogg"
+
 
 # CONSTANTS
 LEFT = 'left'
