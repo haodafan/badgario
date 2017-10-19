@@ -38,6 +38,13 @@ Minor changes:
 - Changed img.png to Tanner
 
 
+#################################
+October 19th 2017
+Version: 0.0.4B
+Fixed bug where boss would never go diagonally down-left
+
+
+
 
 STREEEETCH GOAL
 #################################

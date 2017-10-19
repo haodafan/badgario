@@ -517,8 +517,8 @@ def bossAI(objBoss, objPlayer):
     elif (proportion < -0.5 and proportion > -2 and diff_X < 0):
         return BOSS_SPEED, - BOSS_SPEED 
     # Case 4: Diagonal down-left
-    # The boss only goes up-right if proportion of the differences X/Y are between -1/2 and -2/1, X positive
-    elif (proportion < -0.5 and proportion > -2 and diff_X < 0):
+    # The boss only goes down-left if proportion of the differences X/Y are between -1/2 and -2/1, X positive
+    elif (proportion < -0.5 and proportion > -2 and diff_X > 0):
         return - BOSS_SPEED, BOSS_SPEED 
 
     # Cases 5-8: straight directions
@@ -528,7 +528,7 @@ def bossAI(objBoss, objPlayer):
         return BOSS_SPEED, 0
     elif (diff_Y > 0 and diff_Y > diff_X):
         return 0, - BOSS_SPEED
-    elif(diff_Y < 0 and diff_Y < diff_X):
+    elif (diff_Y < 0 and diff_Y < diff_X):
         return 0, BOSS_SPEED
     else:
         return 0,0
