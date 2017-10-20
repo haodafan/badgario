@@ -49,6 +49,12 @@ OHNO_DIR = "data/active/ohno.ogg"
 VIEW_DIR = "data/active/view.ogg"
 TOUCH_DIR = "data/active/touch.ogg"
 
+#RED ARROW INDICATOR
+ARROW_PAD = 50
+ARROW_SIZE = 40
+REDUP_DIR = 'redUp.png'
+REDUPLEFT_DIR = 'redUpRight.png'
+
 
 # CONSTANTS
 LEFT = 'left'

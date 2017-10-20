@@ -2,7 +2,7 @@
 #Development start: October 16th 2017
 #Current Build: October 18th 2017
 
-#Version: 0.0.3
+#Version: 0.0.5
 
 # ---------------------------------------------------
 # LIBRARIES
@@ -31,9 +31,16 @@ def main():
 
     BASICFONT = pygame.font.Font('freesansbold.ttf', 32)
 
+    # Image loading
+    # (for some reason, it only works if it is a GLOBAL variable
+    # So unfortunately I guess I'll just have to use globals. Whamp whamp
     global BOSS_IMG
     BOSS_IMG = pygame.image.load(BOSS_DIR)
-    #
+    
+    global REDUP_IMG
+    REDUP_IMG = pygame.image.load(REDUP_DIR)
+    global REDUPLEFT_IMG
+    REDUPLEFT_IMG = pygame.image.load(REDUPLEFT_DIR)
 
     while True:
         runGame()
@@ -76,9 +83,10 @@ def runGame():
     ohnoSound = pygame.mixer.Sound(OHNO_DIR)
     touchSound = pygame.mixer.Sound(TOUCH_DIR)
     
-
+    #Ball objects
     objOtherBalls = [] #Stores all balls used in game
 
+    #Boss ball object
     objBoss = {'surface' : pygame.transform.scale(BOSS_IMG, (BOSS_SIZE * 2, BOSS_SIZE * 2)),
                'size' : BOSS_SIZE,
                'speed' : BOSS_SPEED,
@@ -88,18 +96,31 @@ def runGame():
                'isEaten' : False}
         
 
+    #Player ball object
     objPlayer = {'name': NAME,
                  'size': STARTSIZE,
                  'color' : BLACK,
                  'x' : HALF_SCREENSIZE_X,
                  'y' : HALF_SCREENSIZE_Y
-}
+                }
+    #Indicator arrows
+    arrowUp = pygame.transform.rotate(REDUP_IMG, 0)
+    arrowLeft = pygame.transform.rotate(REDUP_IMG, 90)
+    arrowDown = pygame.transform.rotate(REDUP_IMG, 180)
+    arrowRight = pygame.transform.rotate(REDUP_IMG, 270)
+
+    arrowUpLeft = pygame.transform.rotate(REDUPLEFT_IMG, 0)
+    arrowDownLeft = pygame.transform.rotate(REDUPLEFT_IMG, 90)
+    arrowDownRight = pygame.transform.rotate(REDUPLEFT_IMG, 180)
+    arrowUpRight = pygame.transform.rotate(REDUPLEFT_IMG, 270)
+
+    #Player movement booleans
     moveLeft = False
     moveRight = False
     moveUp = False
     moveDown = False
 
-    #Turnaround
+    #Gamestate booleans
     turnAround = False
     bossInScreen = True
     bossInTouch = False
@@ -298,21 +319,86 @@ def runGame():
                 # Note that I have to subtract the boss's size from the camera to compensate for the boss's 'corner' coordinates.
                 # I probably could have coded that better :P 
             if not bossInScreen and not isOutsideCamera(cameraX - objBoss['size'], cameraY - objBoss['size'], objBoss):
-                print("THE BOSS HAS ENTERED YOUR CAMERA")
+                #print("THE BOSS HAS ENTERED YOUR CAMERA")
                 bossInScreen = True
-                pygame.mixer.Sound.play(viewSound)
+                if not turnAround:
+                    pygame.mixer.Sound.play(viewSound)
                 
             elif bossInScreen and isOutsideCamera(cameraX - objBoss['size'], cameraY - objBoss['size'], objBoss):
-                print("THE BOSS HAS LEFT YOUR CAMERA")
+                #print("THE BOSS HAS LEFT YOUR CAMERA")
                 bossInScreen = False
 
             if not bossInTouch and bossTouch(objBoss, objPlayer):
-                print("OH NO THE BOSS HAS TOUCHED YOU!!!!!!!!!!!")
+                #print("OH NO THE BOSS HAS TOUCHED YOU!!!!!!!!!!!")
                 bossInTouch = True
-                pygame.mixer.Sound.play(touchSound)
+                if not turnAround:
+                    pygame.mixer.Sound.play(touchSound)
             elif bossInTouch and not bossTouch(objBoss, objPlayer):
-                print("Phew, he stopped touching you in that weird way. Ew gross")
+                #print("Phew, he stopped touching you in that weird way. Ew gross")
                 bossInTouch = False
+
+            ## Red Indicator arrows ##
+            #if isOutsideCamera(cameraX - objBoss['size'], cameraY - objBoss['size'], objBoss):
+            if not bossInScreen:
+                #First we use BossAI to figure out where the Boss is in relation to the player
+                x, y = bossAI(objBoss, objPlayer)
+                
+                #DEBUGGING
+                #print("x,y = " + str(x) + "," + str(y))
+
+                # Reference:
+                # +x = down, +y = right
+
+                #objBoss['rect'] = pygame.Rect( (objBoss['x'] - cameraX, objBoss['y'] - cameraY,
+                #                          objBoss['size'] * 2, objBoss['size'] * 2))
+                #SURF.blit(objBoss['surface'], objBoss['rect'])
+                if (y > 0 and x > 0):
+                    #boss moves down-right
+                    #Arrow points up-left
+                    objArrow = pygame.Rect(ARROW_PAD, ARROW_PAD, ARROW_SIZE, ARROW_SIZE)
+                    SURF.blit(arrowUpLeft, objArrow)
+                elif (y > 0 and x < 0):
+                    #boss moves down-left
+                    #Arrow points up-right
+                    objArrow = pygame.Rect(SCREENSIZE_X - ARROW_PAD, ARROW_PAD, ARROW_SIZE, ARROW_SIZE)
+                    SURF.blit(arrowUpRight, objArrow)
+                elif (y > 0 and x == 0):
+                    #boss moves down
+                    #Arrow points up
+                    objArrow = pygame.Rect(HALF_SCREENSIZE_X, ARROW_PAD, ARROW_SIZE, ARROW_SIZE)
+                    SURF.blit(arrowUp, objArrow)
+                elif (y < 0 and x > 0):
+                    #boss moves up-right
+                    #Arrow points down-left
+                    objArrow = pygame.Rect(ARROW_PAD, SCREENSIZE_Y - ARROW_PAD, ARROW_SIZE, ARROW_SIZE)
+                    SURF.blit(arrowDownLeft, objArrow)
+                elif (y < 0 and x < 0):
+                    #boss moves up-left
+                    #Arrow points down-right
+                    objArrow = pygame.Rect(SCREENSIZE_X - ARROW_PAD, SCREENSIZE_Y - ARROW_PAD, ARROW_SIZE, ARROW_SIZE)
+                    SURF.blit(arrowDownRight, objArrow)
+                elif (y < 0 and x == 0):
+                    #boss moves up
+                    #Arrow points down
+                    objArrow = pygame.Rect(HALF_SCREENSIZE_X, SCREENSIZE_Y - ARROW_PAD, ARROW_SIZE, ARROW_SIZE)
+                    SURF.blit(arrowDown, objArrow)
+                elif (y == 0 and x > 0):
+                    #Boss moves right
+                    #Arrow points left
+                    objArrow = pygame.Rect(ARROW_PAD, HALF_SCREENSIZE_Y, ARROW_SIZE, ARROW_SIZE)
+                    SURF.blit(arrowLeft, objArrow)
+                elif (y == 0 and x < 0):
+                    #Boss moves left
+                    #Arrow points right
+                    objArrow = pygame.Rect(SCREENSIZE_X - ARROW_PAD, HALF_SCREENSIZE_Y, ARROW_SIZE, ARROW_SIZE)
+                    SURF.blit(arrowRight, objArrow)
+                else:
+                    print("whoa he far! :O ")
+
+                #DEBUGGING
+                #Let's draw a big red circle for where the camera is
+                #pygame.draw.circle(SURF, RED, (cameraX, cameraY), 10, 0)
+                
                     
         else:
             #Game is over. Show "gameover" text
@@ -522,13 +608,13 @@ def bossAI(objBoss, objPlayer):
         return - BOSS_SPEED, BOSS_SPEED 
 
     # Cases 5-8: straight directions
-    elif (diff_X > 0 and diff_X > diff_Y):
+    elif (diff_X > 0 and math.fabs(diff_X) > math.fabs(diff_Y)):
         return - BOSS_SPEED, 0
-    elif (diff_X < 0 and diff_X < diff_Y):
+    elif (diff_X < 0 and math.fabs(diff_X) > math.fabs(diff_Y)):
         return BOSS_SPEED, 0
-    elif (diff_Y > 0 and diff_Y > diff_X):
+    elif (diff_Y > 0 and math.fabs(diff_Y) > math.fabs(diff_X)):
         return 0, - BOSS_SPEED
-    elif (diff_Y < 0 and diff_Y < diff_X):
+    elif (diff_Y < 0 and math.fabs(diff_Y) > math.fabs(diff_X)):
         return 0, BOSS_SPEED
     else:
         return 0,0
@@ -546,4 +632,3 @@ def bossCatchup(objBoss, objPlayer):
 
 if __name__ == '__main__':
     main()
-

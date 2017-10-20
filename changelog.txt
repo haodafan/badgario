@@ -44,6 +44,18 @@ Version: 0.0.4B
 Fixed bug where boss would never go diagonally down-left
 
 
+#################################
+October 20th 2017
+Version: 0.0.5
+
+New Feature: 
+- Added an arrow that points in the direction of the boss when he is out of screen
+
+Bug fixes: 
+- Fixed the boss's moving AI bug where he would not move down unless you are directly below him
+- Boss's ai works as intended now.  
+
+Changed so that the boss stops playing sounds after the turnaround
 
 
 STREEEETCH GOAL
