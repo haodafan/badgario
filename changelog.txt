@@ -57,6 +57,12 @@ Bug fixes:
 
 Changed so that the boss stops playing sounds after the turnaround
 
+#################################
+October 20th 2017
+Version 0.0.5B
+
+Removed the build folder - it wasn't working properly anyway
+Also deleted the pycache folder
 
 STREEEETCH GOAL
 #################################
