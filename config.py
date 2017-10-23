@@ -6,8 +6,8 @@
 
 SCREENSIZE_X = 1366
 SCREENSIZE_Y = 768
-HALF_SCREENSIZE_X = int(SCREENSIZE_X/2)
-HALF_SCREENSIZE_Y = int(SCREENSIZE_Y/2)
+HALF_SCREENSIZE_X = int(SCREENSIZE_X/2) #(do not touch)
+HALF_SCREENSIZE_Y = int(SCREENSIZE_Y/2) #(do not touch)
 
 FPS = 30
 
@@ -18,8 +18,8 @@ NAME = 'Player'
 MOVERATE = 8
 
 STARTSIZE = 25
-EATSIZE = STARTSIZE - 15
-WINSIZE = 200
+EATSIZE = STARTSIZE - 15 # not implemented
+WINSIZE = 200 # not implemented
 
 GAMEOVERTIME = 4
 
@@ -41,7 +41,7 @@ BOSS_SPEED = 5
 BOSS_START_X = SCREENSIZE_X
 BOSS_START_Y = SCREENSIZE_Y
 
-#CUSTOMIZED BOSS
+#CUSTOMIZED BOSS (Do not touch)
 BOSS_DIR = "data/active/img.png"
 EAT_DIR = "data/active/eat.ogg"
 EATEN_DIR = "data/active/eaten.ogg"
@@ -49,14 +49,14 @@ OHNO_DIR = "data/active/ohno.ogg"
 VIEW_DIR = "data/active/view.ogg"
 TOUCH_DIR = "data/active/touch.ogg"
 
-#RED ARROW INDICATOR
+#RED ARROW INDICATOR (Do not touch)
 ARROW_PAD = 50
 ARROW_SIZE = 40
 REDUP_DIR = 'redUp.png'
 REDUPLEFT_DIR = 'redUpRight.png'
 
 
-# CONSTANTS
+# CONSTANTS (do not touch)
 LEFT = 'left'
 RIGHT = 'right'
 

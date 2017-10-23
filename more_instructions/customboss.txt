@@ -1,0 +1,31 @@
+#==================================#
+#============ BADGARIO ============#
+#---------- By Haoda Fan ----------#
+#==================================#
+-- HOW TO CREATE YOUR CUSTOM BOSS --
+
+I have purposefully made it very easy and simple to create a custom boss. 
+For a complete custom boss, you will need SIX files. 
+
+- One preferred image of your boss (Should be a SQUARE image) 
+- Five .ogg audio files
+
+For the audio files, they must be in the .ogg format. You can use the free program 'Audacity' to record or modify existing audio, and export as a .ogg file. 
+You need five audio files: 
+"eat.ogg" - the sound that plays when the boss eats the player
+"eaten.ogg" - the sound that plays when the player eats the boss
+"view.ogg" - the sound that plays when the boss comes into screen view
+"touch.ogg" - the sound that plays when the boss's rectangle comes into contact with the player
+"ohno.ogg" - the sound that plays when the player becomes big enough to eat the boss
+
+To put this new boss into your game is a simple process: 
+
+Step 1: Navigate to wherever you saved the game
+Step 2: Go to badgario/data/active
+Step 3: Delete the six existing files (We should have a saved copy of the six files in badgario/data/bosses)
+Step 4: Copy-paste your six files into that folder (if you decide to cut-paste, remember to save those files somewhere if you want to use a different boss!)
+Step 5: Run the game with your custom boss!
+
+------------------------------------
+
+In the future, I plan on creating a feature that can change the bosses with the click of a single button. Unfortunately for now, you will have to follow these instructions.

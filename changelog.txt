@@ -64,6 +64,18 @@ Version 0.0.5B
 Removed the build folder - it wasn't working properly anyway
 Also deleted the pycache folder
 
+#################################
+October 23rd 2017
+Version 0.0.6
+
+New Feature: Main Menu (play_badgario.py)
+Added a main menu with three options:
+1. Play game - launches the main game
+2. Game settings - launches a text file with instructions on how to manually change game settings
+3. Customize Boss - launches a text file with instructions on how to customize the ingame boss
+
+Also added instructions on the latter two things
+
 STREEEETCH GOAL
 #################################
 Version 1.0.0

@@ -1,0 +1,17 @@
+#==================================#
+#============ BADGARIO ============#
+#---------- By Haoda Fan ----------#
+#==================================#
+-- HOW TO CONFIGURE GAME SETTINGS --
+
+
+
+Step 1: Right-click the file 'config.py' 
+Step 2: Select 'Edit with IDLE' (I'm assuming you have Python installed)
+
+Step 3: Edit the contents
+Now you can edit the variables that configure the game. 
+Please do not edit the ones that have the comment "#Do not touch" as those could break the game. 
+
+Step 4: Save the file
+Step 5: Play the game with your modified settings!
