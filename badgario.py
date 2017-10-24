@@ -507,7 +507,7 @@ def makeNewBall(cameraX, cameraY, objPlayer):
     colour = BALLCOLOUR[chooser]
     
     #Random Size
-    MaxSize = objPlayer['size'] + 55
+    MaxSize = objPlayer['size'] + 35
     if MaxSize > WINSIZE - 50:
         MaxSize = WINSIZE - 50
     size = random.randint(ENEMYMINSIZE, MaxSize)
