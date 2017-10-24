@@ -1,8 +1,8 @@
 #@Author: Haoda Fan
 #Development start: October 16th 2017
-#Current Build: October 18th 2017
+#Current Build: October 24th 2017
 
-#Version: 0.0.5
+#Version: 0.0.7
 
 # ---------------------------------------------------
 # LIBRARIES
@@ -12,6 +12,7 @@ from pygame.locals import *
 
 #Local modular libraries
 from config import *
+from play_badgario import *
 
 # ---------------------------------------------------
 # MAIN FUNCTION / INITIALIZATION
@@ -124,48 +125,89 @@ def runGame():
     turnAround = False
     bossInScreen = True
     bossInTouch = False
+    paused = False # PAUSE FEATURE IN DEVELOPMENT #
+    
     
     #################
     ### GAME LOOP ###
     #################
 
     while True:
-        ## Draw background ##
-        SURF.fill(WHITE)
-        
-        ## Move enemy balls ##
-        for objBall in objOtherBalls:
-            objBall['x'] += objBall['movex']
-            objBall['y'] += objBall['movey']
 
-            #random chance they change direction
-            if random.randint(0, 99) < DIRCHANGEFREQ:
-                objBall['movex'] = getRandomVelocity()
-                objBall['movey'] = getRandomVelocity()
+
+        #### THE ACTIVE GAME ####
+
+        if not paused:
+
+            ## Draw background ##
+            SURF.fill(WHITE)
+            ## Move enemy balls ##
+            for objBall in objOtherBalls:
+                objBall['x'] += objBall['movex']
+                objBall['y'] += objBall['movey']
+
+                #random chance they change direction
+                if random.randint(0, 99) < DIRCHANGEFREQ:
+                    objBall['movex'] = getRandomVelocity()
+                    objBall['movey'] = getRandomVelocity()
+                    
+            ## Removing out-of-screen balls ##
+            for i in range(len(objOtherBalls) -1, -1, -1):
+                if isOutsideActiveArea(cameraX, cameraY, objOtherBalls[i]):
+                    del objOtherBalls[i]
+
+            ## Adding more balls ##
+            while len(objOtherBalls) < NUMENEMIES:
+                objOtherBalls.append(makeNewBall(cameraX, cameraY, objPlayer))
                 
-        ## Removing out-of-screen balls ##
-        for i in range(len(objOtherBalls) -1, -1, -1):
-            if isOutsideActiveArea(cameraX, cameraY, objOtherBalls[i]):
-                del objOtherBalls[i]
+            ## Moving the camera ##
+            # Right-Left
+            if (cameraX + HALF_SCREENSIZE_X) - objPlayer['x'] > CAMERASLACK:
+                cameraX = objPlayer['x'] + CAMERASLACK - HALF_SCREENSIZE_X
+            elif objPlayer['x'] - (cameraX + HALF_SCREENSIZE_X) > CAMERASLACK:
+                cameraX = objPlayer['x'] - CAMERASLACK - HALF_SCREENSIZE_X
+            # Down-Up
+            if (cameraY + HALF_SCREENSIZE_Y) - objPlayer['y'] > CAMERASLACK:
+                cameraY = objPlayer['y'] + CAMERASLACK - HALF_SCREENSIZE_Y
+            elif objPlayer['y'] - (cameraY + HALF_SCREENSIZE_Y) > CAMERASLACK:
+                cameraY = objPlayer['y'] - CAMERASLACK - HALF_SCREENSIZE_Y
+            #DEBUGGING
+            #print("CAMERA POSITION: " + str(cameraX) + ", " + str(cameraY))
 
-        ## Adding more balls ##
-        while len(objOtherBalls) < NUMENEMIES:
-            objOtherBalls.append(makeNewBall(cameraX, cameraY, objPlayer))
+            ## Moving the Boss ##
+            boss_move_X = 0
+            boss_move_Y = 0
+            if isOutsideActiveArea(cameraX, cameraY, objBoss) and not turnAround:
+                
+                #The boss needs to catch up 
+                boss_move_X, boss_move_Y = bossCatchup(objBoss, objPlayer)
+            elif turnAround:
+                #Now the boss runs away from you!
+                boss_move_X, boss_move_Y = bossAI(objBoss, objPlayer)
+                boss_move_X = - boss_move_X
+                boss_move_Y = - boss_move_Y
+                #Debugging
+                #print("Boss Reverses!!!")
+                
+            else:
+                #Boss moves at normal speed
+                boss_move_X, boss_move_Y = bossAI(objBoss, objPlayer)
+                #Debugging
+                #print("Boss Normal move")
+                
+            #Moving it
+            if not gameWon:
+                objBoss['x'] += boss_move_X
+                objBoss['y'] += boss_move_Y
+
+
+        elif paused:
+            ## Draw background ##
+            SURF.fill(GRAY)
+
             
-        ## Moving the camera ##
-        # Right-Left
-        if (cameraX + HALF_SCREENSIZE_X) - objPlayer['x'] > CAMERASLACK:
-            cameraX = objPlayer['x'] + CAMERASLACK - HALF_SCREENSIZE_X
-        elif objPlayer['x'] - (cameraX + HALF_SCREENSIZE_X) > CAMERASLACK:
-            cameraX = objPlayer['x'] - CAMERASLACK - HALF_SCREENSIZE_X
-        # Down-Up
-        if (cameraY + HALF_SCREENSIZE_Y) - objPlayer['y'] > CAMERASLACK:
-            cameraY = objPlayer['y'] + CAMERASLACK - HALF_SCREENSIZE_Y
-        elif objPlayer['y'] - (cameraY + HALF_SCREENSIZE_Y) > CAMERASLACK:
-            cameraY = objPlayer['y'] - CAMERASLACK - HALF_SCREENSIZE_Y
-        #DEBUGGING
-        #print("CAMERA POSITION: " + str(cameraX) + ", " + str(cameraY))
-
+        #### THE STATIC GAME ####
+        
         ## Draw Enemy Balls ##
         for objBall in objOtherBalls:
 
@@ -194,38 +236,21 @@ def runGame():
                                            objBoss['size'] * 2, objBoss['size'] * 2))
             SURF.blit(objBoss['surface'], objBoss['rect'])
 
-        ## Moving the Boss ##
-        boss_move_X = 0
-        boss_move_Y = 0
-        if isOutsideActiveArea(cameraX, cameraY, objBoss) and not turnAround:
-            
-            #The boss needs to catch up 
-            boss_move_X, boss_move_Y = bossCatchup(objBoss, objPlayer)
-        elif turnAround:
-            #Now the boss runs away from you!
-            boss_move_X, boss_move_Y = bossAI(objBoss, objPlayer)
-            boss_move_X = - boss_move_X
-            boss_move_Y = - boss_move_Y
-            #Debugging
-            #print("Boss Reverses!!!")
-            
-        else:
-            #Boss moves at normal speed
-            boss_move_X, boss_move_Y = bossAI(objBoss, objPlayer)
-            #Debugging
-            #print("Boss Normal move")
-            
-        #Moving it
-        if not gameWon:
-            objBoss['x'] += boss_move_X
-            objBoss['y'] += boss_move_Y
-
-                                     
+        ## If it's paused, then we draw some words
+        if paused:
+            gamePauseSurf = BASICFONT.render('GAME PAUSED.', True, WHITE)
+            gamePauseRect = gamePauseSurf.get_rect()
+            gamePauseRect.center = (HALF_SCREENSIZE_X, CAMERASLACK)
+            SURF.blit(gamePauseSurf, gamePauseRect)
+                
+                                  
         ### EVENT HANDLING LOOP ###
         for event in pygame.event.get():
             if event.type == QUIT:
                 terminate()
-            elif event.type == KEYDOWN:
+
+            ## Active events ##
+            elif event.type == KEYDOWN and not paused:
                 if event.key in (K_UP, K_w):
                     #moveDown = False
                     moveUp = True
@@ -238,6 +263,11 @@ def runGame():
                 elif event.key in (K_RIGHT, K_d):
                     #moveLeft = False
                     moveRight = True
+                    
+                elif event.key == K_p:
+                    #Pause key
+                    paused = True
+                    
                 elif gameWon and event.key == K_r:
                     return
 
@@ -253,6 +283,19 @@ def runGame():
                     moveRight = False
                 elif event.key == K_ESCAPE:
                     terminate()
+
+            ## Paused Events ##
+            elif event.type == KEYDOWN and paused:
+                if event.key == K_p:
+                    #Pause key
+                    paused = False
+
+            ## This just fixes the bug where the player continues moving after paused ##
+            if paused:
+                moveUp = False
+                moveDown = False
+                moveRight = False
+                moveLeft = False
 
         ### More Ingame Triggers ###
         if not gameOver:
@@ -422,6 +465,7 @@ def runGame():
 def terminate():
     pygame.quit()
     sys.exit()
+
 
 
 # GET RANDOM VELOCITY

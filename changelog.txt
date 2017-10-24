@@ -76,6 +76,13 @@ Added a main menu with three options:
 
 Also added instructions on the latter two things
 
+#################################
+October 24th 2017
+Version 0.0.7
+
+New Feature: Pause
+When a player presses 'p', the game will pause. All movement is frozen, and the background will turn grey. You press 'p' again to unpause.
+
 STREEEETCH GOAL
 #################################
 Version 1.0.0
