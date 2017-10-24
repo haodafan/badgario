@@ -7,9 +7,10 @@
 I have purposefully made it very easy and simple to create a custom boss. 
 For a complete custom boss, you will need SIX files. 
 
-- One preferred image of your boss (Should be a SQUARE image) 
+- One preferred image of your boss (Should be a SQUARE image in PNG format) 
 - Five .ogg audio files
 
+You must rename your image to "img.png" for it to work properly.
 For the audio files, they must be in the .ogg format. You can use the free program 'Audacity' to record or modify existing audio, and export as a .ogg file. 
 You need five audio files: 
 "eat.ogg" - the sound that plays when the boss eats the player
