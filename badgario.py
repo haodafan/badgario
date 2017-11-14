@@ -2,7 +2,7 @@
 #Development start: October 16th 2017
 #Current Build: November 14th 2017
 
-#Version: 0.0.8
+#Version: 0.0.8B
 
 # ---------------------------------------------------
 # LIBRARIES
@@ -140,7 +140,8 @@ def runGame():
     turnAround = False
     bossInScreen = True
     bossInTouch = False
-    paused = False # PAUSE FEATURE IN DEVELOPMENT #
+    paused = False
+    cheats = False
 
 
     #################
@@ -300,6 +301,17 @@ def runGame():
                     #Pause key
                     paused = True
 
+                # CHEATS #
+                elif event.key in (K_RCTRL, K_LCTRL):
+                    cheats = True
+
+                elif cheats and event.key == K_EQUALS:
+                    #Add-size cheat
+                    objPlayer['size'] += 10
+                elif cheats and event.key == K_MINUS:
+                    #Subtract-size cheat
+                    objPlayer['size'] -= 10
+
                 elif gameWon and event.key == K_r:
                     return False #Game starts over if returns false
 
@@ -313,6 +325,10 @@ def runGame():
                     moveLeft = False
                 elif event.key in (K_RIGHT, K_d):
                     moveRight = False
+
+                elif event.key in (K_RCTRL, K_LCTRL):
+                    cheats = False #Stops the cheats
+
                 elif event.key == K_ESCAPE or event.key == K_m:
                     goBackToMenu = True
                     return True #Game goes back to menu if returns true

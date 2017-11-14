@@ -1,6 +1,6 @@
 # BADGARIO - A Shitty Version of Agar.io
 By Haoda Fan
-Current version: 0.0.8 (playable)
+Current version: 0.0.8B (playable)
 
 ## HOW TO INSTALL AND PLAY
 Note that you will need both Python and Pygame to play this game. If you have both, skip to setup.
@@ -28,9 +28,13 @@ Step 2: Run play-badgario.py
 
 
 ## INFORMATION ABOUT HOW I MADE THIS GAME AND STUFF
-This game was inspired by agar.io and largely based off of a pygame tutorial game known as squirrel eat squirrel, which has similar mechanics. You can see it here:  https://inventwithpython.com/makinggames.pdf (page 200).
+This game was inspired by agar.io and much of the code was based off of a pygame tutorial game known as squirrel eat squirrel, which has similar mechanics. You can see it here:  https://inventwithpython.com/makinggames.pdf (page 200).
 
 Resources used:
 - Python 3.6.3
 - PyGame
 - My blood, sweat, and tears. Just kidding, only tears.
+
+## Special Thanks:
+Voice actors for default bosses:
+tanner - *Tanner Van Teeffelen*  (Listen to his music at https://soundcloud.com/auditory-ascendance)

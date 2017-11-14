@@ -99,6 +99,16 @@ Changes:
 - All victory/defeat text is gray
 - Set it so that the player will be displayed IN FRONT OF the boss when he is larger. 
 
+#################################
+November 14th 2017
+Version 0.0.8B
+
+Cheats added: 
+- Press control+'=' to increase your size value by 5. 
+- Press control+'-' to decrease your size value by 5. (NOTE THAT DECREASING YOUR SIZE BY CHEATS DOES NOT MAKE YOU FASTER)
+
+Updated README.MD to include special thanks section for my voice actor(s)
+
 
 STREEEETCH GOAL
 #################################
