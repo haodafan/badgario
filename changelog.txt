@@ -83,6 +83,23 @@ Version 0.0.7
 New Feature: Pause
 When a player presses 'p', the game will pause. All movement is frozen, and the background will turn grey. You press 'p' again to unpause.
 
+#################################
+November 14th 2017
+Version 0.0.8
+
+New Feature: Dynamic Player Speed AND New loss condition: You are too fat!
+As the player gets bigger, he will also become slower. This is done through a series of stages where when the player passes each size stage, the player loses 1 movespeed.
+If the player's movespeed becomes the same or lower than the boss, then he loses because he would never be able to catch up. 
+
+New Feature: Return to Menu
+When the player hits 'escape' or 'm', it will return to the main menu screen. 
+(note for developers: I have changed the runGame function so that it will return a boolean indicating whether to RETURN TO MENU (True) or RESTART (False))
+
+Changes: 
+- All victory/defeat text is gray
+- Set it so that the player will be displayed IN FRONT OF the boss when he is larger. 
+
+
 STREEEETCH GOAL
 #################################
 Version 1.0.0

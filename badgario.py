@@ -1,8 +1,8 @@
 #@Author: Haoda Fan
 #Development start: October 16th 2017
-#Current Build: October 24th 2017
+#Current Build: November 14th 2017
 
-#Version: 0.0.7
+#Version: 0.0.8
 
 # ---------------------------------------------------
 # LIBRARIES
@@ -37,14 +37,17 @@ def main():
     # So unfortunately I guess I'll just have to use globals. Whamp whamp
     global BOSS_IMG
     BOSS_IMG = pygame.image.load(BOSS_DIR)
-    
+
     global REDUP_IMG
     REDUP_IMG = pygame.image.load(REDUP_DIR)
     global REDUPLEFT_IMG
     REDUPLEFT_IMG = pygame.image.load(REDUPLEFT_DIR)
 
-    while True:
-        runGame()
+    goBackToMenu = False
+    while not goBackToMenu:
+        goBackToMenu = runGame()
+    if goBackToMenu:
+        return #Go back
 
 # ---------------------------------------------------
 # RUN FUNCTION / GAME LOOP
@@ -55,8 +58,16 @@ def runGame():
     gameOverStartTime = 0 # Time the player lost
     gameWon = False       # If the player has won
 
+    # Set player speed and player speed decrease rate
+    # Default settings: Starting speed: 9, Starting Size: 25, Rate: -1 SPEED / 50 SIZE
+    # SIZE    25  -  75   -  125  -  175  -  225  -  275  -  325
+    # SPEED   9      8        7       6       5       4       3
+    currentSpeed = MOVERATE
+    currentStage = STARTSIZE # 25
+    nextStage = STARTSIZE + STAGESIZE # 50
+
     #Game text
-    gameOverSurf = BASICFONT.render('OM NOM NOM, WHOSE SHITTY NOW?', True, BLACK)
+    gameOverSurf = BASICFONT.render('OM NOM NOM, WHOSE SHITTY NOW?', True, GRAY)
     gameOverRect = gameOverSurf.get_rect()
     gameOverRect.center = (HALF_SCREENSIZE_X, HALF_SCREENSIZE_Y)
 
@@ -64,7 +75,7 @@ def runGame():
     gameWonRect = gameWonSurf.get_rect()
     gameWonRect.center = (HALF_SCREENSIZE_X, HALF_SCREENSIZE_Y)
 
-    gameWonSurf2 = BASICFONT.render('(press "r" to restart)', True, GRAY)
+    gameWonSurf2 = BASICFONT.render('(press "r" to restart, esc to return to menu)', True, GRAY)
     gameWonRect2 = gameWonSurf2.get_rect()
     gameWonRect2.center = (HALF_SCREENSIZE_X, HALF_SCREENSIZE_Y + 45)
 
@@ -72,7 +83,11 @@ def runGame():
     playerNameSurf = NAMEFONT.render(NAME, True, WHITE)
     playerNameRect = playerNameSurf.get_rect()
     playerNameRect.center = (HALF_SCREENSIZE_X, HALF_SCREENSIZE_Y)
-    
+
+    gameUnresolvedSurf = BASICFONT.render("YOU'VE BECOME TOO FAT! NOW YOU CAN'T CHASE! GG EZ MID", True, GRAY)
+    gameUnresolvedRect = gameUnresolvedSurf.get_rect()
+    gameUnresolvedRect.center = (HALF_SCREENSIZE_X, HALF_SCREENSIZE_Y + 45)
+
     #Camera
     cameraX = 0
     cameraY = 0
@@ -83,7 +98,7 @@ def runGame():
     eatenSound = pygame.mixer.Sound(EATEN_DIR)
     ohnoSound = pygame.mixer.Sound(OHNO_DIR)
     touchSound = pygame.mixer.Sound(TOUCH_DIR)
-    
+
     #Ball objects
     objOtherBalls = [] #Stores all balls used in game
 
@@ -95,7 +110,7 @@ def runGame():
                'y' : BOSS_START_Y,
                'canEaten' : False,
                'isEaten' : False}
-        
+
 
     #Player ball object
     objPlayer = {'name': NAME,
@@ -126,8 +141,8 @@ def runGame():
     bossInScreen = True
     bossInTouch = False
     paused = False # PAUSE FEATURE IN DEVELOPMENT #
-    
-    
+
+
     #################
     ### GAME LOOP ###
     #################
@@ -150,7 +165,7 @@ def runGame():
                 if random.randint(0, 99) < DIRCHANGEFREQ:
                     objBall['movex'] = getRandomVelocity()
                     objBall['movey'] = getRandomVelocity()
-                    
+
             ## Removing out-of-screen balls ##
             for i in range(len(objOtherBalls) -1, -1, -1):
                 if isOutsideActiveArea(cameraX, cameraY, objOtherBalls[i]):
@@ -159,7 +174,7 @@ def runGame():
             ## Adding more balls ##
             while len(objOtherBalls) < NUMENEMIES:
                 objOtherBalls.append(makeNewBall(cameraX, cameraY, objPlayer))
-                
+
             ## Moving the camera ##
             # Right-Left
             if (cameraX + HALF_SCREENSIZE_X) - objPlayer['x'] > CAMERASLACK:
@@ -178,8 +193,8 @@ def runGame():
             boss_move_X = 0
             boss_move_Y = 0
             if isOutsideActiveArea(cameraX, cameraY, objBoss) and not turnAround:
-                
-                #The boss needs to catch up 
+
+                #The boss needs to catch up
                 boss_move_X, boss_move_Y = bossCatchup(objBoss, objPlayer)
             elif turnAround:
                 #Now the boss runs away from you!
@@ -188,13 +203,13 @@ def runGame():
                 boss_move_Y = - boss_move_Y
                 #Debugging
                 #print("Boss Reverses!!!")
-                
+
             else:
                 #Boss moves at normal speed
                 boss_move_X, boss_move_Y = bossAI(objBoss, objPlayer)
                 #Debugging
                 #print("Boss Normal move")
-                
+
             #Moving it
             if not gameWon:
                 objBoss['x'] += boss_move_X
@@ -205,9 +220,9 @@ def runGame():
             ## Draw background ##
             SURF.fill(GRAY)
 
-            
+
         #### THE STATIC GAME ####
-        
+
         ## Draw Enemy Balls ##
         for objBall in objOtherBalls:
 
@@ -215,6 +230,10 @@ def runGame():
                                (objBall['x'] - cameraX, objBall['y'] - cameraY),
                                objBall['size'], 0)
 
+        ## DRAW PLAYER/BOSS BALLS ##
+
+        # OLD #
+        """
         ## Draw Player Ball ##
         #Note: drawing the player after the enemies will ensure that im always on top if you know what I mean :^)
         if not gameOver:
@@ -235,6 +254,19 @@ def runGame():
             objBoss['rect'] = pygame.Rect( (objBoss['x'] - cameraX, objBoss['y'] - cameraY,
                                            objBoss['size'] * 2, objBoss['size'] * 2))
             SURF.blit(objBoss['surface'], objBoss['rect'])
+        """
+
+        # NEW #
+        # This new if statement allows the Player to be drawn in front of the boss when it's bigger
+        if not turnAround:
+            if not gameOver:
+                drawPlayer(objPlayer, cameraX, cameraY) #Only draws the player ball if he isn't eaten
+            drawBoss(objBoss, cameraX, cameraY)
+        else:
+            if not objBoss['isEaten']:
+                drawBoss(objBoss, cameraX, cameraY) #Only draws the boss ball if he isn't eaten
+            drawPlayer(objPlayer, cameraX, cameraY)
+
 
         ## If it's paused, then we draw some words
         if paused:
@@ -242,8 +274,8 @@ def runGame():
             gamePauseRect = gamePauseSurf.get_rect()
             gamePauseRect.center = (HALF_SCREENSIZE_X, CAMERASLACK)
             SURF.blit(gamePauseSurf, gamePauseRect)
-                
-                                  
+
+
         ### EVENT HANDLING LOOP ###
         for event in pygame.event.get():
             if event.type == QUIT:
@@ -263,13 +295,13 @@ def runGame():
                 elif event.key in (K_RIGHT, K_d):
                     #moveLeft = False
                     moveRight = True
-                    
+
                 elif event.key == K_p:
                     #Pause key
                     paused = True
-                    
+
                 elif gameWon and event.key == K_r:
-                    return
+                    return False #Game starts over if returns false
 
             elif event.type == KEYUP:
                 #stop moving
@@ -281,8 +313,9 @@ def runGame():
                     moveLeft = False
                 elif event.key in (K_RIGHT, K_d):
                     moveRight = False
-                elif event.key == K_ESCAPE:
-                    terminate()
+                elif event.key == K_ESCAPE or event.key == K_m:
+                    goBackToMenu = True
+                    return True #Game goes back to menu if returns true
 
             ## Paused Events ##
             elif event.type == KEYDOWN and paused:
@@ -299,16 +332,16 @@ def runGame():
 
         ### More Ingame Triggers ###
         if not gameOver:
-            
+
             ## Moving the player ##
             if moveLeft:
-                objPlayer['x'] -= MOVERATE
+                objPlayer['x'] -= currentSpeed
             if moveRight:
-                objPlayer['x'] += MOVERATE
+                objPlayer['x'] += currentSpeed
             if moveUp:
-                objPlayer['y'] -= MOVERATE
+                objPlayer['y'] -= currentSpeed
             if moveDown:
-                objPlayer['y'] += MOVERATE
+                objPlayer['y'] += currentSpeed
 
             ## Collision Detection ##
             for i in range(len(objOtherBalls) - 1, -1, -1):
@@ -317,7 +350,7 @@ def runGame():
                 # In shitty agario, you have at least partially engulf the other ball.
 
                 # I will accomplish this by creating a separate rectangles for my ball, much smaller than my ball's actual drawn circle.
-                # If the center point of the enemy ball is inside my rectangle, then I will consider myself eaten. 
+                # If the center point of the enemy ball is inside my rectangle, then I will consider myself eaten.
                 objBall = objOtherBalls[i]
                 if (canEngulf(objPlayer, objBall)):
                     objPlayer['size'] = doEngulf(objPlayer, objBall)
@@ -329,9 +362,9 @@ def runGame():
                         turnAround = True
                         print("!!TURNAROUND!!")
                         pygame.mixer.Sound.play(ohnoSound)
-                    
+
                 elif (canEngulf(objBall, objPlayer)):
-                    #You have been engulfed by another ball! YOU LOSE! 
+                    #You have been engulfed by another ball! YOU LOSE!
                     #del objPlayer
                     gameOver = True
                     gameOverStartTime = time.time()
@@ -360,13 +393,13 @@ def runGame():
             ## Boss proximity detection and sound triggers ##
             #  We have the constants: bossInScreen and bossInTouch to keep track of its current state
                 # Note that I have to subtract the boss's size from the camera to compensate for the boss's 'corner' coordinates.
-                # I probably could have coded that better :P 
+                # I probably could have coded that better :P
             if not bossInScreen and not isOutsideCamera(cameraX - objBoss['size'], cameraY - objBoss['size'], objBoss):
                 #print("THE BOSS HAS ENTERED YOUR CAMERA")
                 bossInScreen = True
                 if not turnAround:
                     pygame.mixer.Sound.play(viewSound)
-                
+
             elif bossInScreen and isOutsideCamera(cameraX - objBoss['size'], cameraY - objBoss['size'], objBoss):
                 #print("THE BOSS HAS LEFT YOUR CAMERA")
                 bossInScreen = False
@@ -385,7 +418,7 @@ def runGame():
             if not bossInScreen:
                 #First we use BossAI to figure out where the Boss is in relation to the player
                 x, y = bossAI(objBoss, objPlayer)
-                
+
                 #DEBUGGING
                 #print("x,y = " + str(x) + "," + str(y))
 
@@ -441,14 +474,30 @@ def runGame():
                 #DEBUGGING
                 #Let's draw a big red circle for where the camera is
                 #pygame.draw.circle(SURF, RED, (cameraX, cameraY), 10, 0)
-                
-                    
+
+            ## PLAYER DYNAMIC SPEED ##
+            if objPlayer['size'] > nextStage:
+                #If the player size is at the next stage...
+                currentSpeed -= 1
+                currentStage = nextStage #Currently not used but eh whatever
+                nextStage += STAGESIZE
+
+                # ANOTHER GAME OVER CONDITION!!! #
+                if currentSpeed <= BOSS_SPEED:
+                    #You've become too fat!
+                    SURF.blit(gameUnresolvedSurf, gameUnresolvedRect)
+                    gameOverStartTime = time.time()
+                    #displays it for GAMEOVERTIME seconds... (note: does not work lol)
+                    if time.time() - gameOverStartTime > GAMEOVERTIME:
+                        return False #End the current game (restarts)
+
+
         else:
             #Game is over. Show "gameover" text
             SURF.blit(gameOverSurf, gameOverRect)
-            #displays it for GAMEOVERTIME seconds... (note: does not work lol) 
+            #displays it for GAMEOVERTIME seconds... (note: does not work lol)
             if time.time() - gameOverStartTime > GAMEOVERTIME:
-                return #End the current game
+                return False #End the current game (restarts)
 
         if gameWon:
             SURF.blit(gameWonSurf, gameWonRect)
@@ -456,7 +505,7 @@ def runGame():
 
         pygame.display.update()
         FPSCLOCK.tick(FPS)
-        
+
 # ---------------------------------------------------
 # HELPER FUNCTIONS
 # ---------------------------------------------------
@@ -466,7 +515,9 @@ def terminate():
     pygame.quit()
     sys.exit()
 
-
+#New menu function returns to the main menu
+#def backToMenu():
+#    goBackToMenu = False # This should stop the main loops
 
 # GET RANDOM VELOCITY
 # This function returns a value between MINSPEED and MAXSPEED (from the config file)
@@ -494,18 +545,18 @@ def getRandomOffCameraPos(cameraX, cameraY, objRadius):
         objRect = pygame.Rect(x, y, objRadius * 2, objRadius * 2)
         if not objRect.colliderect(cameraRect):
             return x, y
-        
+
 
 #MAKE NEW BALLS
 def makeNewBall(cameraX, cameraY, objPlayer):
     #Your code here
     ball = {}
-    
+
     # BALL CREATION
     #Random color
     chooser = random.randint(0, len(BALLCOLOUR) - 1)
     colour = BALLCOLOUR[chooser]
-    
+
     #Random Size
     MaxSize = objPlayer['size'] + 35
     if MaxSize > WINSIZE - 50:
@@ -555,7 +606,7 @@ def canEngulf(objA, objB):
     rightEdge = objA['x'] + halfSize
     topEdge = objA['y'] - halfSize
     bottomEdge = objA['y'] + halfSize
-    
+
     #Now, let's check if the point of object B is inside object A
     if (objB['x'] > leftEdge and objB['x'] < rightEdge and objB['y'] > topEdge and objB['y'] < bottomEdge):
         print("Possible engulfing detected!")
@@ -587,18 +638,18 @@ def bossEngulfInverted(objPlayer, objBoss):
                      'y' : objBoss['y'] + objBoss['size'],
                      'size' : objBoss['size']}
     return canEngulf(objPlayer, objBossCenter)
-                     
+
 
 # doEngulf function
 # This function will return the new size of object A
-# This function will NOT remove object B. That must be done manually in the main game loop. 
+# This function will NOT remove object B. That must be done manually in the main game loop.
 def doEngulf(objA, objB):
     #Size increase algorithm
     #I can't simply increase the 'radius', or else my ball will begin growing EXPONENTIALLY large
 
     # My algorithm for increasing the size of the ball must have to do with AREA
     # Algorithm: areaA = areaA + (ENGULF_EFFICIENCY * areaB)
-    #            sizeA = sqrt(areaA)/pi 
+    #            sizeA = sqrt(areaA)/pi
     areaA = 3.1415926 * objA['size'] * objA['size']
     areaB = 3.1415926 * objB['size'] * objB['size']
 
@@ -609,7 +660,7 @@ def doEngulf(objA, objB):
 
     #DEBUGGING
     print("ALGORITHM NEW SIZE: " + str(int( math.sqrt(newArea / 3.1415926) )))
-    
+
     #OLD ALGORITHM
     #newSize = round( objA['size'] + ENGULF_EFFICIENCY * objB['size'] )
 
@@ -622,7 +673,7 @@ def doEngulf(objA, objB):
 def bossAI(objBoss, objPlayer):
     bossCenterX = objBoss['x'] + objBoss['size']
     bossCenterY = objBoss['y'] + objBoss['size']
-    
+
     # The Difference represents how far the Boss needs to go in order to reach the player
     diff_X = bossCenterX - objPlayer['x']
     diff_Y = bossCenterY - objPlayer['y']
@@ -632,24 +683,24 @@ def bossAI(objBoss, objPlayer):
         proportion = 0
     else:
         proportion = diff_X / diff_Y
-    
+
     # Case 1: Diagonal down-right
     # The Boss only goes down-right if the proportion of the differences X/Y are between 1/2 and 2/1, X negative
     if (proportion > 0.5 and proportion < 2 and diff_X < 0):
         return BOSS_SPEED, BOSS_SPEED
     # Case 2: Diagonal up-left
-    # The Boss only goes up-left if the proportion of the differences X/Y are between 1/2 and 2/1, X positive    
+    # The Boss only goes up-left if the proportion of the differences X/Y are between 1/2 and 2/1, X positive
     elif (proportion > 0.5 and proportion < 2 and diff_X > 0):
         return - BOSS_SPEED, - BOSS_SPEED
 
     # Case 3: Diagonal up-right
     # The boss only goes up-right if proportion of the differences X/Y are between -1/2 and -2/1, X negative
     elif (proportion < -0.5 and proportion > -2 and diff_X < 0):
-        return BOSS_SPEED, - BOSS_SPEED 
+        return BOSS_SPEED, - BOSS_SPEED
     # Case 4: Diagonal down-left
     # The boss only goes down-left if proportion of the differences X/Y are between -1/2 and -2/1, X positive
     elif (proportion < -0.5 and proportion > -2 and diff_X > 0):
-        return - BOSS_SPEED, BOSS_SPEED 
+        return - BOSS_SPEED, BOSS_SPEED
 
     # Cases 5-8: straight directions
     elif (diff_X > 0 and math.fabs(diff_X) > math.fabs(diff_Y)):
@@ -672,7 +723,25 @@ def bossCatchup(objBoss, objPlayer):
     new_x = x * catchup_multiplier
     new_y = y * catchup_multiplier
     return new_x, new_y
-    
+
+## DRAWING PLAYER/BOSS FUNCTIONS ##
+def drawPlayer(objPlayer, cameraX, cameraY):
+    pygame.draw.circle(SURF, objPlayer['color'],
+                       (objPlayer['x'] - cameraX, objPlayer['y'] - cameraY),
+                       objPlayer['size'], 0)
+    #Floating text name
+    fontSize = int(objPlayer['size'] / 3)
+    NAMEFONT = pygame.font.Font('freesansbold.ttf', fontSize)
+
+    playerNameSurf = NAMEFONT.render(NAME, True, WHITE)
+    playerNameRect = playerNameSurf.get_rect()
+    playerNameRect.center = (objPlayer['x'] - cameraX, objPlayer['y'] - cameraY)
+    SURF.blit(playerNameSurf, playerNameRect)
+
+def drawBoss(objBoss, cameraX, cameraY):
+    objBoss['rect'] = pygame.Rect( (objBoss['x'] - cameraX, objBoss['y'] - cameraY,
+                                   objBoss['size'] * 2, objBoss['size'] * 2))
+    SURF.blit(objBoss['surface'], objBoss['rect'])
 
 if __name__ == '__main__':
     main()

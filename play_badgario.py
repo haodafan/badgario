@@ -1,5 +1,4 @@
-# THIS PORTION IS UNUSED AND STILL IN DEVELOPMENT.
-#
+# This Menu is in Playable condition! PLAYABLE!! 
 
 # ----------------------------------------------------
 from badgario import *
@@ -42,15 +41,15 @@ class GameMenu():
         while mainLoop:
             #Limit frame speed to FPS
             self.clock.tick(15)
-            
+
 
             ## Screen ##
-            
+
             #Drawing the background
             self.SURF.fill(WHITE)
             #pygame.display.flip() #To be honest, not sure what this is supposed to do.
-            
-            
+
+
             #Titles
             textTitleSurf = self.BIGFONT.render("Badgario - A shitty version of Agar.io", True, BLACK)
             textTitleRect = textTitleSurf.get_rect()
@@ -63,9 +62,9 @@ class GameMenu():
             #Drawing the titles
             self.SURF.blit(textTitleSurf, textTitleRect)
             self.SURF.blit(textSubSurf, textSubRect)
-            
+
             ## Buttons ##
-            
+
             #Button 1: Play the game
 
             if playHover:
@@ -77,12 +76,12 @@ class GameMenu():
 
             pygame.draw.circle(self.SURF, backPlayColor, (HALF_SCREENSIZE_X, HALF_SCREENSIZE_Y + CAMERASLACK + 25), CAMERASLACK, 0)
 
-            
+
             textPlaySurf = self.SMALLERFONT.render("Play game!", True, textPlayColor)
             textPlayRect = textPlaySurf.get_rect()
             textPlayRect.center = (HALF_SCREENSIZE_X, HALF_SCREENSIZE_Y + CAMERASLACK + 25)
             self.SURF.blit(textPlaySurf, textPlayRect)
-            
+
             #Button 2: How to configure game
 
             if configHover:
@@ -91,32 +90,32 @@ class GameMenu():
             else:
                 textConfigColor = BLUE
                 backConfigColor = WHITE
-                
+
             pygame.draw.circle(self.SURF, backConfigColor, (50 + CAMERASLACK, HALF_SCREENSIZE_Y + CAMERASLACK + 25), CAMERASLACK, 0)
-            
+
             textConfigSurf = self.SMALLESTFONT.render("Game Settings", True, textConfigColor)
             textConfigRect = textConfigSurf.get_rect()
             textConfigRect.center = (50 + CAMERASLACK, HALF_SCREENSIZE_Y + CAMERASLACK + 25)
             self.SURF.blit(textConfigSurf, textConfigRect)
-            
+
             #Button 3: How to customize boss
-            
+
             if bossHover:
                 textBossColor = WHITE
                 backBossColor = RED
             else:
                 textBossColor = RED
                 backBossColor = WHITE
-                
+
             pygame.draw.circle(self.SURF, backBossColor, (SCREENSIZE_X - CAMERASLACK - 50, HALF_SCREENSIZE_Y + CAMERASLACK + 25), CAMERASLACK, 0)
-            
+
             textBossSurf = self.SMALLESTFONT.render("Customize Boss", True, textBossColor)
             textBossRect = textBossSurf.get_rect()
             textBossRect.center = (SCREENSIZE_X - CAMERASLACK - 50, HALF_SCREENSIZE_Y + CAMERASLACK + 25)
             self.SURF.blit(textBossSurf, textBossRect)
-            
+
             #Coming soon! Buttons that do the work for you! (you lazy asshole)
-            
+
             #Mouse recognition
             mouse = pygame.mouse.get_pos()
             #Note mouse[0] = x, mouse[1] = y
@@ -145,7 +144,7 @@ class GameMenu():
                 os.system("notepad.exe more_instructions/config.txt")
             elif mouseClick == (1,0,0) and bossHover:
                 os.system("notepad.exe more_instructions/customboss.txt")
-            
+
             ## Event Listeners ##
             for event in pygame.event.get():
                 # Quitting
@@ -162,7 +161,7 @@ class GameMenu():
     def isInRect(x, y, objRect):
         newRect = pygame.Rect(x-1, y-1, 2, 2)
         return objRect.colliderect(newRect)
-                        
+
 
 if __name__ == "__main__":
     #Create the screen

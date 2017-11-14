@@ -11,13 +11,14 @@ HALF_SCREENSIZE_Y = int(SCREENSIZE_Y/2) #(do not touch)
 
 FPS = 30
 
-CAMERASLACK = 90 
+CAMERASLACK = 90
 
 # GAME SETTINGS
-NAME = 'Player'
-MOVERATE = 8
+NAME = 'Player' #Player name
+MOVERATE = 8 #Player speed
 
 STARTSIZE = 25
+STAGESIZE = 50
 EATSIZE = STARTSIZE - 15 # not implemented
 WINSIZE = 200 # not implemented
 
@@ -29,14 +30,15 @@ MINSPEED = 1
 MAXSPEED = 4
 DIRCHANGEFREQ = 3 # % chance of direction change per frame
 
+# Not implemented
 ENGULF_THRESHOLD_MULTIPLIER = 1.3 #You have to be this much times the size to engulf
 ENGULF_THRESHOLD_CONSTANT = 20 #You have to be this many sizes bigger to engulf
 
-ENGULF_EFFICIENCY = 0.6 #How much size you gain from engulfing the other object
+ENGULF_EFFICIENCY = 0.5 #How much size you gain from engulfing the other object
 
 #BOSS SETTINGS
-BOSS_SIZE = 190
-BOSS_SPEED = 5
+BOSS_SIZE = 200
+BOSS_SPEED = 4
 
 BOSS_START_X = SCREENSIZE_X
 BOSS_START_Y = SCREENSIZE_Y
@@ -72,7 +74,3 @@ YELLOW = (255, 255,   0)
 PURPLE = (128,   0, 128)
 
 BALLCOLOUR = [RED, GREEN, BLUE, YELLOW, PURPLE]
-
-
-
-
