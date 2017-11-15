@@ -109,6 +109,18 @@ Cheats added:
 
 Updated README.MD to include special thanks section for my voice actor(s)
 
+#################################
+November 15th 2017
+Version 0.0.8C
+
+Changes: 
+- You can now press 'r' to restart the game no matter if you win, lose, or become too fat.
+- Gave the press 'r' to restart text screen to all end-game screens. 
+
+Bug fixes: 
+Fixed bug where the Turnaround flag will not happen if you use cheats to increase size. 
+Fixed bug where the game will not end after you become too fat, due to the endgame statement being nested in the dynamic speed if statement. 
+
 
 STREEEETCH GOAL
 #################################

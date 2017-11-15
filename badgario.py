@@ -2,7 +2,7 @@
 #Development start: October 16th 2017
 #Current Build: November 14th 2017
 
-#Version: 0.0.8B
+#Version: 0.0.8C
 
 # ---------------------------------------------------
 # LIBRARIES
@@ -57,16 +57,18 @@ def runGame():
     gameOver = False      # If the player has lost
     gameOverStartTime = 0 # Time the player lost
     gameWon = False       # If the player has won
+    gameUnresolved = False# If the player is too fat to win or lose
 
     # Set player speed and player speed decrease rate
     # Default settings: Starting speed: 9, Starting Size: 25, Rate: -1 SPEED / 50 SIZE
-    # SIZE    25  -  75   -  125  -  175  -  225  -  275  -  325
-    # SPEED   9      8        7       6       5       4       3
+    #       SIZE    25  -  75   -  125  -  175  -  225  -  275  -  325
+    #       SPEED   9      8        7       6       5       4       3
+    #       BOSS_SIZE: 200
     currentSpeed = MOVERATE
     currentStage = STARTSIZE # 25
     nextStage = STARTSIZE + STAGESIZE # 50
 
-    #Game text
+    # Game text
     gameOverSurf = BASICFONT.render('OM NOM NOM, WHOSE SHITTY NOW?', True, GRAY)
     gameOverRect = gameOverSurf.get_rect()
     gameOverRect.center = (HALF_SCREENSIZE_X, HALF_SCREENSIZE_Y)
@@ -86,13 +88,13 @@ def runGame():
 
     gameUnresolvedSurf = BASICFONT.render("YOU'VE BECOME TOO FAT! NOW YOU CAN'T CHASE! GG EZ MID", True, GRAY)
     gameUnresolvedRect = gameUnresolvedSurf.get_rect()
-    gameUnresolvedRect.center = (HALF_SCREENSIZE_X, HALF_SCREENSIZE_Y + 45)
+    gameUnresolvedRect.center = (HALF_SCREENSIZE_X, HALF_SCREENSIZE_Y)
 
-    #Camera
+    # Camera
     cameraX = 0
     cameraY = 0
 
-    #Sound objects
+    # Sound objects
     viewSound = pygame.mixer.Sound(VIEW_DIR)
     eatSound = pygame.mixer.Sound(EAT_DIR)
     eatenSound = pygame.mixer.Sound(EATEN_DIR)
@@ -143,13 +145,11 @@ def runGame():
     paused = False
     cheats = False
 
-
     #################
     ### GAME LOOP ###
     #################
 
     while True:
-
 
         #### THE ACTIVE GAME ####
 
@@ -277,6 +277,8 @@ def runGame():
             SURF.blit(gamePauseSurf, gamePauseRect)
 
 
+        #### GAME TRIGGERS ####
+
         ### EVENT HANDLING LOOP ###
         for event in pygame.event.get():
             if event.type == QUIT:
@@ -312,7 +314,7 @@ def runGame():
                     #Subtract-size cheat
                     objPlayer['size'] -= 10
 
-                elif gameWon and event.key == K_r:
+                elif (gameWon or gameOver or gameUnresolved) and event.key == K_r:
                     return False #Game starts over if returns false
 
             elif event.type == KEYUP:
@@ -373,12 +375,6 @@ def runGame():
                     del objOtherBalls[i] # The other ball was eaten
                     print("OM NOM NOM")
 
-                    #Turnaround point, where you can now eat the boss
-                    if not turnAround and objPlayer['size'] > objBoss['size']:
-                        turnAround = True
-                        print("!!TURNAROUND!!")
-                        pygame.mixer.Sound.play(ohnoSound)
-
                 elif (canEngulf(objBall, objPlayer)):
                     #You have been engulfed by another ball! YOU LOSE!
                     #del objPlayer
@@ -428,6 +424,13 @@ def runGame():
             elif bossInTouch and not bossTouch(objBoss, objPlayer):
                 #print("Phew, he stopped touching you in that weird way. Ew gross")
                 bossInTouch = False
+
+            # Boss vs Player size detection and Turnaround trigger #
+            #Turnaround point, where you can now eat the boss
+            if not turnAround and objPlayer['size'] > objBoss['size']:
+                turnAround = True
+                print("!!TURNAROUND!!")
+                pygame.mixer.Sound.play(ohnoSound)
 
             ## Red Indicator arrows ##
             #if isOutsideCamera(cameraX - objBoss['size'], cameraY - objBoss['size'], objBoss):
@@ -498,19 +501,24 @@ def runGame():
                 currentStage = nextStage #Currently not used but eh whatever
                 nextStage += STAGESIZE
 
-                # ANOTHER GAME OVER CONDITION!!! #
-                if currentSpeed <= BOSS_SPEED:
-                    #You've become too fat!
-                    SURF.blit(gameUnresolvedSurf, gameUnresolvedRect)
-                    gameOverStartTime = time.time()
-                    #displays it for GAMEOVERTIME seconds... (note: does not work lol)
-                    if time.time() - gameOverStartTime > GAMEOVERTIME:
-                        return False #End the current game (restarts)
+            # ANOTHER GAME OVER CONDITION!!! #
+            if currentSpeed <= BOSS_SPEED:
+                #You've become too fat!
+                #Shows the 'you've become too fat' text
+                SURF.blit(gameUnresolvedSurf, gameUnresolvedRect)
+                SURF.blit(gameWonSurf2, gameWonRect2) #Displays some restarting info
+                gameUnresolved = True
+                gameOverStartTime = time.time()
+                #displays it for GAMEOVERTIME seconds... (note: does not work lol)
+                if time.time() - gameOverStartTime > GAMEOVERTIME:
+                    return False #End the current game (restarts)
 
 
         else:
             #Game is over. Show "gameover" text
             SURF.blit(gameOverSurf, gameOverRect)
+            SURF.blit(gameWonSurf2, gameWonRect2) #Displays some restarting info
+
             #displays it for GAMEOVERTIME seconds... (note: does not work lol)
             if time.time() - gameOverStartTime > GAMEOVERTIME:
                 return False #End the current game (restarts)
@@ -759,5 +767,6 @@ def drawBoss(objBoss, cameraX, cameraY):
                                    objBoss['size'] * 2, objBoss['size'] * 2))
     SURF.blit(objBoss['surface'], objBoss['rect'])
 
+#This starts the game if you run this file instead of play_badgario.py
 if __name__ == '__main__':
     main()
