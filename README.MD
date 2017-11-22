@@ -1,6 +1,6 @@
 # BADGARIO - A Shitty Version of Agar.io
 By Haoda Fan
-Current version: 0.0.8B (playable)
+Current version: 0.0.8C (playable)
 
 ## HOW TO INSTALL AND PLAY
 Note that you will need both Python and Pygame to play this game. If you have both, skip to setup.
@@ -37,4 +37,5 @@ Resources used:
 
 ## Special Thanks:
 Voice actors for default bosses:
-tanner - *Tanner Van Teeffelen*  (Listen to his music at https://soundcloud.com/auditory-ascendance)
+
+tanner - **Tanner Van Teeffelen**  (Listen to his music at https://soundcloud.com/auditory-ascendance)
