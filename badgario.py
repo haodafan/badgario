@@ -60,10 +60,11 @@ def runGame():
     gameUnresolved = False# If the player is too fat to win or lose
 
     # Set player speed and player speed decrease rate
-    # Default settings: Starting speed: 9, Starting Size: 25, Rate: -1 SPEED / 50 SIZE
-    #       SIZE    25  -  75   -  125  -  175  -  225  -  275  -  325
-    #       SPEED   9      8        7       6       5       4       3
-    #       BOSS_SIZE: 200
+    # Default settings: Starting speed: 13, Starting Size: 25, Rate: -1 SPEED / 50 SIZE
+    #       SIZE    25  -  50  -  75  -  100  -  125  -  150  -  175  -  200  -  225  -  250
+    #       SPEED   13  -  12  -  11  -   10  -   9   -   8   -   7   -   6   -   5   -   4
+    
+    #       BOSS_SIZE: 210
     currentSpeed = MOVERATE
     currentStage = STARTSIZE # 25
     nextStage = STARTSIZE + STAGESIZE # 50
@@ -679,8 +680,8 @@ def doEngulf(objA, objB):
 
     newArea = areaA + (ENGULF_EFFICIENCY * areaB)
 
-    #Your area will either increase by + 3 or by the New Area Algorithm, whichever one gives you more
-    newSize = max(objA['size'] + 2, int( math.sqrt(newArea / 3.1415926) ) )
+    #Your area will either increase by + 1 or by the New Area Algorithm, whichever one gives you more
+    newSize = max(objA['size'] + 1, int( math.sqrt(newArea / 3.1415926) ) )
 
     #DEBUGGING
     print("ALGORITHM NEW SIZE: " + str(int( math.sqrt(newArea / 3.1415926) )))

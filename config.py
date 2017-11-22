@@ -15,10 +15,10 @@ CAMERASLACK = 90
 
 # GAME SETTINGS
 NAME = 'Player' #Player name
-MOVERATE = 8 #Player speed
+MOVERATE = 13 #Player initial speed
 
 STARTSIZE = 25
-STAGESIZE = 50
+STAGESIZE = 25
 EATSIZE = STARTSIZE - 15 # not implemented
 WINSIZE = 200 # not implemented
 
@@ -37,7 +37,7 @@ ENGULF_THRESHOLD_CONSTANT = 20 #You have to be this many sizes bigger to engulf
 ENGULF_EFFICIENCY = 0.5 #How much size you gain from engulfing the other object
 
 #BOSS SETTINGS
-BOSS_SIZE = 200
+BOSS_SIZE = 210
 BOSS_SPEED = 4
 
 BOSS_START_X = SCREENSIZE_X
@@ -72,5 +72,6 @@ GREEN  = (  0, 255,   0)
 BLUE   = (  0,   0, 255)
 YELLOW = (255, 255,   0)
 PURPLE = (128,   0, 128)
+TURQ   = ( 50, 198, 166) #TURQOISE :D 
 
-BALLCOLOUR = [RED, GREEN, BLUE, YELLOW, PURPLE]
+BALLCOLOUR = [RED, GREEN, BLUE, YELLOW, PURPLE, TURQ]

@@ -121,6 +121,23 @@ Bug fixes:
 Fixed bug where the Turnaround flag will not happen if you use cheats to increase size. 
 Fixed bug where the game will not end after you become too fat, due to the endgame statement being nested in the dynamic speed if statement. 
 
+################################
+November 17th 2017
+Version 0.0.8D
+
+Changes: 
+Added a new color: Turqoise! :D
+The default game is a bit too easy, so I made some significant balance changes: 
+ - Changed the minimum engulfing size change from +2 to +1
+ - Changed the boss size from 200 to 210
+ - Changed the staging system 
+	- Starting speed changed from 8 to 13
+	- Stage separation (The amount of size you must gain to lose speed) changed from 50 to 25
+	- You will become TOO FAT at size 250 instead of size 275
+
+Personally, I'm not sure if this makes the game better or worse. I'll get my playtesters to try it out... IF I HAD ANY. :'( 
+
+	
 
 STREEEETCH GOAL
 #################################
