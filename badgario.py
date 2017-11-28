@@ -60,14 +60,25 @@ def runGame():
     gameUnresolved = False# If the player is too fat to win or lose
 
     # Set player speed and player speed decrease rate
-    # Default settings: Starting speed: 13, Starting Size: 25, Rate: -1 SPEED / 50 SIZE
+
+    # 0.08 settings: Starting speed: 9, Starting size: 25, Rate: -1 SPEED / 50 SIZE
+    #       SIZE    25  -  75  -  125  -  175  -  225  -  275
+    #       SPEED    9  -   8  -   7   -   6   -   5   -   4
+
+    # 0.08D settings: Starting speed: 13, Starting Size: 25, Rate: -1 SPEED / 25 SIZE
     #       SIZE    25  -  50  -  75  -  100  -  125  -  150  -  175  -  200  -  225  -  250
     #       SPEED   13  -  12  -  11  -   10  -   9   -   8   -   7   -   6   -   5   -   4
-    
-    #       BOSS_SIZE: 210
-    currentSpeed = MOVERATE
-    currentStage = STARTSIZE # 25
-    nextStage = STARTSIZE + STAGESIZE # 50
+
+    # 0.08E settings: Starting speed: 11, Starting Size: 33, Rate: -1 SPEED / 33 SIZE
+    #       SIZE    33  -  66  -  99  -  132  -  156  -  198  -  231  -  264
+    #       SPEED   11  -  10  -   9  -   8   -   7   -   6   -   5   -   4
+
+    # Current settings: 0.08E
+
+    #       BOSS_SIZE: 215
+    currentSpeed = MOVERATE # 11
+    currentStage = STARTSIZE # 33
+    nextStage = STARTSIZE + STAGESIZE # 33
 
     # Game text
     gameOverSurf = BASICFONT.render('OM NOM NOM, WHOSE SHITTY NOW?', True, GRAY)

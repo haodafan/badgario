@@ -13,15 +13,15 @@ October 18th 2017
 Version: 0.0.2
 
 A simple boss is added in.
-The boss: 
+The boss:
 - follows you around
 - is slightly slower, but once it's outside the active area, a catchup mechanic prevents him from getting too far from the player
 
 #################################
 October 18th 2017
-Version: 0.0.3 
+Version: 0.0.3
 
-Boss feature additions: 
+Boss feature additions:
 - Boss will run away from you after you reach a certain size
 - Engulfing mechanics with Boss created
 - Boss will detect when it comes into camera view, and when it touches you
@@ -30,11 +30,11 @@ NEW VICTORY CONDITION: You win if you eat the boss!
 #################################
 October 18th 2017
 Version: 0.0.4
-Added sound: 
+Added sound:
 - Boss will play sounds when it detects coming into camera view, touching player, and the turnaround
 - Boss will play sounds when it eats and is eaten
 
-Minor changes: 
+Minor changes:
 - Changed img.png to Tanner
 
 
@@ -48,12 +48,12 @@ Fixed bug where boss would never go diagonally down-left
 October 20th 2017
 Version: 0.0.5
 
-New Feature: 
+New Feature:
 - Added an arrow that points in the direction of the boss when he is out of screen
 
-Bug fixes: 
+Bug fixes:
 - Fixed the boss's moving AI bug where he would not move down unless you are directly below him
-- Boss's ai works as intended now.  
+- Boss's ai works as intended now.
 
 Changed so that the boss stops playing sounds after the turnaround
 
@@ -89,22 +89,22 @@ Version 0.0.8
 
 New Feature: Dynamic Player Speed AND New loss condition: You are too fat!
 As the player gets bigger, he will also become slower. This is done through a series of stages where when the player passes each size stage, the player loses 1 movespeed.
-If the player's movespeed becomes the same or lower than the boss, then he loses because he would never be able to catch up. 
+If the player's movespeed becomes the same or lower than the boss, then he loses because he would never be able to catch up.
 
 New Feature: Return to Menu
-When the player hits 'escape' or 'm', it will return to the main menu screen. 
+When the player hits 'escape' or 'm', it will return to the main menu screen.
 (note for developers: I have changed the runGame function so that it will return a boolean indicating whether to RETURN TO MENU (True) or RESTART (False))
 
-Changes: 
+Changes:
 - All victory/defeat text is gray
-- Set it so that the player will be displayed IN FRONT OF the boss when he is larger. 
+- Set it so that the player will be displayed IN FRONT OF the boss when he is larger.
 
 #################################
 November 14th 2017
 Version 0.0.8B
 
-Cheats added: 
-- Press control+'=' to increase your size value by 5. 
+Cheats added:
+- Press control+'=' to increase your size value by 5.
 - Press control+'-' to decrease your size value by 5. (NOTE THAT DECREASING YOUR SIZE BY CHEATS DOES NOT MAKE YOU FASTER)
 
 Updated README.MD to include special thanks section for my voice actor(s)
@@ -113,36 +113,52 @@ Updated README.MD to include special thanks section for my voice actor(s)
 November 15th 2017
 Version 0.0.8C
 
-Changes: 
+Changes:
 - You can now press 'r' to restart the game no matter if you win, lose, or become too fat.
-- Gave the press 'r' to restart text screen to all end-game screens. 
+- Gave the press 'r' to restart text screen to all end-game screens.
 
-Bug fixes: 
-Fixed bug where the Turnaround flag will not happen if you use cheats to increase size. 
-Fixed bug where the game will not end after you become too fat, due to the endgame statement being nested in the dynamic speed if statement. 
+Bug fixes:
+Fixed bug where the Turnaround flag will not happen if you use cheats to increase size.
+Fixed bug where the game will not end after you become too fat, due to the endgame statement being nested in the dynamic speed if statement.
 
 ################################
 November 17th 2017
 Version 0.0.8D
 
-Changes: 
+Changes:
 Added a new color: Turqoise! :D
-The default game is a bit too easy, so I made some significant balance changes: 
+The default game is a bit too easy, so I made some significant balance changes:
  - Changed the minimum engulfing size change from +2 to +1
  - Changed the boss size from 200 to 210
- - Changed the staging system 
+ - Changed the staging system
 	- Starting speed changed from 8 to 13
 	- Stage separation (The amount of size you must gain to lose speed) changed from 50 to 25
 	- You will become TOO FAT at size 250 instead of size 275
 
-Personally, I'm not sure if this makes the game better or worse. I'll get my playtesters to try it out... IF I HAD ANY. :'( 
+Personally, I'm not sure if this makes the game better or worse. I'll get my playtesters to try it out... IF I HAD ANY. :'(
 
-	
+#################################
+November 28th 2017
+Version 0.0.8E
+
+Changes:
+Balance of the game changed again. The ball is initially too fast, and becomes too fat too early.
+The new default game is somewhere between the settings in 0.0.8D and the original 0.0.8
+You can view stats in the original settings in the source code for badgario.py and config.py
+Here are the changes:
+ - Changed the boss size from 210 to 215
+ - Changed the smallest possible enemy ball size from 8 to 10
+ - Changed the staging system
+  - Changed the default start size from 25 to 33
+  - Changed the stage separation from 25 to 33
+  - You will become TOO FAT at size 264 instead of size 250
+
+
 
 STREEEETCH GOAL
 #################################
 Version 1.0.0
 - Game will be fully playable
 - Boss sounds will play when it detects things
-- Can customize boss using addon program or simple modding 
+- Can customize boss using addon program or simple modding
 - Game is fully configurable and customizable using addon program

@@ -1,9 +1,6 @@
 # CONFIGURATION PYTHON FILE
 
 # GENERAL SETTINGS
-#MAPSIZE_X = 1600
-#MAPSIZE_Y = 1200
-
 SCREENSIZE_X = 1366
 SCREENSIZE_Y = 768
 HALF_SCREENSIZE_X = int(SCREENSIZE_X/2) #(do not touch)
@@ -17,15 +14,29 @@ CAMERASLACK = 90
 NAME = 'Player' #Player name
 MOVERATE = 13 #Player initial speed
 
-STARTSIZE = 25
-STAGESIZE = 25
+    # Set player speed and player speed decrease rate
+
+    # 0.08 settings: Starting speed: 9, Starting size: 25, Rate: -1 SPEED / 50 SIZE
+    #       SIZE    25  -  75  -  125  -  175  -  225  -  275
+    #       SPEED    9  -   8  -   7   -   6   -   5   -   4
+
+    # 0.08D settings: Starting speed: 13, Starting Size: 25, Rate: -1 SPEED / 25 SIZE
+    #       SIZE    25  -  50  -  75  -  100  -  125  -  150  -  175  -  200  -  225  -  250
+    #       SPEED   13  -  12  -  11  -   10  -   9   -   8   -   7   -   6   -   5   -   4
+
+    # 0.08E settings: Starting speed: 11, Starting Size: 33, Rate: -1 SPEED / 33 SIZE
+    #       SIZE    33  -  66  -  99  -  132  -  156  -  198  -  231  -  264
+    #       SPEED   11  -  10  -   9  -   8   -   7   -   6   -   5   -   4
+    # Current settings: 0.08E
+STARTSIZE = 33
+STAGESIZE = 33
 EATSIZE = STARTSIZE - 15 # not implemented
 WINSIZE = 200 # not implemented
 
 GAMEOVERTIME = 4
 
 NUMENEMIES = 30
-ENEMYMINSIZE = 8
+ENEMYMINSIZE = 10
 MINSPEED = 1
 MAXSPEED = 4
 DIRCHANGEFREQ = 3 # % chance of direction change per frame
@@ -37,7 +48,7 @@ ENGULF_THRESHOLD_CONSTANT = 20 #You have to be this many sizes bigger to engulf
 ENGULF_EFFICIENCY = 0.5 #How much size you gain from engulfing the other object
 
 #BOSS SETTINGS
-BOSS_SIZE = 210
+BOSS_SIZE = 215
 BOSS_SPEED = 4
 
 BOSS_START_X = SCREENSIZE_X
@@ -72,6 +83,6 @@ GREEN  = (  0, 255,   0)
 BLUE   = (  0,   0, 255)
 YELLOW = (255, 255,   0)
 PURPLE = (128,   0, 128)
-TURQ   = ( 50, 198, 166) #TURQOISE :D 
+TURQ   = ( 50, 198, 166) #TURQOISE :D
 
 BALLCOLOUR = [RED, GREEN, BLUE, YELLOW, PURPLE, TURQ]
